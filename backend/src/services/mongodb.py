@@ -1,7 +1,7 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
-import os,sys
+import os,sys,json
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from dataclasses import dataclass
 from backend.src.utils.exception import customException
@@ -21,7 +21,9 @@ class MongoDB:
         self.client = MongoClient(MongoDBConfig.uri, server_api=ServerApi('1'))
     
     def ping(self):
-        # Send a ping to confirm a successful connection
+        '''
+        Check if the connection is alive
+        '''
         try:
             logging.info("Verifying mongo db connection")
             self.client.admin.command('ping')
@@ -29,7 +31,24 @@ class MongoDB:
         except Exception as e:
             logging.error(e)
             raise customException(e,sys)
+    
+    def insert_Data(self):
+        '''
+        Insert data into the database
+        '''
+        try:
+            logging.info("Pushing data to MongoDB")
+            db = self.client['Restaurant']
+            db.create_collection('info')
+            collection=self.client['Restaurant']['info']
+            with open("F:/EatSage/backend/src/restaurantData/restaurants.json", 'r') as file:
+                data = json.load(file)
+            collection.insert_many(data)
+            logging.info("Pushed successfully")
+        except Exception as e:
+            logging.info(e)
+            raise(e,sys)
 
 if __name__=="__main__":
     mongo = MongoDB()
-    mongo.ping()
+    mongo.insert_Data()
