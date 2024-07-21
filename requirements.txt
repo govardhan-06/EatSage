@@ -1,2 +1,4 @@
 langchain_community
 bs4
+pymongo[srv]
+python-dotenv
