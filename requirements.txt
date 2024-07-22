@@ -1,4 +1,5 @@
-langchain_community
+langchain-community
 bs4
 pymongo[srv]
 python-dotenv
+jq
