@@ -3,3 +3,5 @@ bs4
 pymongo[srv]
 python-dotenv
 uagents
+langchain-groq
+uagents-ai-engine

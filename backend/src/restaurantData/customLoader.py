@@ -3,6 +3,9 @@ from langchain_core.document_loaders import BaseLoader
 from langchain_core.documents import Document
 
 class JSONLoader(BaseLoader):
+    '''
+    Custom Data Loader to load documents from a JSON file.
+    '''
     def __init__(self, file_path):
         self.file_path = file_path
 
