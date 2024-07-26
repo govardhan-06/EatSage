@@ -27,9 +27,10 @@ The Valet Agent's frontend is a list view of all delivery options, allowing the 
 
 ## Environment Variables
 
-The .env file contains the following environment variables. *Note:* The values below are dummy values and should be replaced with actual credentials.
+The .env file contains the following environment variables. 
+*Note:* The values below are dummy values and should be replaced with actual credentials.
 
-plaintext
+```sh
 MONGO_DB_URI="mongodb+srv://username:password@restaurant.mongodb.net/?retryWrites=true&w=majority&appName=Restaurant"
 GROQ_API_KEY="gsk_dummy_api_key"
 GEMINI_API_KEY="AIzaSy_dummy_api_key"
@@ -52,7 +53,7 @@ DEL_ADDRESS="agent1qdummyaddress"
 RES_NAME="EatSage_Restaurant"
 RES_SEED_PHRASE="We are the elite eatsage restaurants!! Food Quality and Customer service is our topmost priority"
 RES_ADDRESS="agent1qdummyaddress"
-
+```
 
 ## Installation
 
