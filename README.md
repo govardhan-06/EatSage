@@ -51,7 +51,6 @@ ModelTesting.ipynb
 README.md
 requirements.txt
 
-
 ## Environment Variables
 
 The .env file contains the following environment variables. *Note:* The values below are dummy values and should be replaced with actual credentials.
