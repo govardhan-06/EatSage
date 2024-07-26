@@ -25,32 +25,6 @@ The Valet Agent's frontend is a list view of all delivery options, allowing the 
 - The Customer Agent can find nearby restaurants using the device's location.
 - Payments are processed through the Fetch Blockchain using the Almanac smart contract. Users must purchase 'FET' tokens, and payments are made automatically.
 
-## Directory Structure
-
-plaintext
-backend/
-    ├── __pycache__
-    └── src/
-        ├── __pycache__
-        ├── agents/
-        ├── pipeline/
-        ├── protocols/
-        ├── restaurantData/
-        ├── services/
-        ├── triggers/
-        ├── utils/
-        │   ├── __init__.py
-        │   └── contextLoader.py
-        └── __init__.py
-eatsage/
-logs/
-.env
-.gitignore
-LICENSE
-ModelTesting.ipynb
-README.md
-requirements.txt
-
 ## Environment Variables
 
 The .env file contains the following environment variables. *Note:* The values below are dummy values and should be replaced with actual credentials.
