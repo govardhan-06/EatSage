@@ -36,22 +36,22 @@ GROQ_API_KEY="gsk_dummy_api_key"
 GEMINI_API_KEY="AIzaSy_dummy_api_key"
 
 USER_EMAIL_ADDRESS="user@example.com"
-EATSAGE_MASTERKEY="eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3Mjk2NDgzNjAsImlhdCI6MTcyMTg3MjM2MCwiaXNzIjoiZmV0Y2guYWkiLCJqdGkiOiI5Y2ZiMTY3MzdkZTExNDg4Y2IwN2U5MmQiLCJzY29wZSI6ImF2Iiwic3ViIjoiZjU0YWQyNDdiNzg0NzM3MDE1YmZjNzJjMjU3YzhiMzFmM2VlNGYxNDJmMjgxNzgyIn0.dummy_master_key"
+EATSAGE_MASTERKEY="dummy_master_key"
 
 # Customer Agent
 CUST_NAME="EatSage_Customer"
-CUST_SEED_PHRASE="customer is the king. Welcome to EatSage!!"
+CUST_SEED_PHRASE="<dummy value>"
 CUST_ADDRESS="agent1q0dummyaddress"
 CUST_MAILBOX="7750ebca-3cb0-4c9e-93be-dummy_mailbox"
 
 # Delivery Partner Agent
 DEL_NAME="EatSage_Delivery"
-DEL_SEED_PHRASE="EatSage delivery partner, committed to customer service"
+DEL_SEED_PHRASE="<dummy value>"
 DEL_ADDRESS="agent1qdummyaddress"
 
 # Restaurant Agent
 RES_NAME="EatSage_Restaurant"
-RES_SEED_PHRASE="We are the elite eatsage restaurants!! Food Quality and Customer service is our topmost priority"
+RES_SEED_PHRASE="<dummy value>"
 RES_ADDRESS="agent1qdummyaddress"
 ```
 
