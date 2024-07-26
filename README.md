@@ -59,28 +59,28 @@ RES_ADDRESS="agent1qdummyaddress"
 
 1. Clone the repository:
 
-bash
+```bash
 git clone https://github.com/govardhan-06/eatsage.git
-
+```
 
 2. Navigate to the project directory:
 
-bash
+```bash
 cd eatsage
-
+```
 
 3. Create and activate a virtual environment:
 
-bash
+```bash
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-
+```
 
 4. Install the required packages:
 
-bash
+```bash
 pip install -r requirements.txt
-
+```
 
 5. Set up your .env file with the appropriate values.
 
@@ -88,9 +88,9 @@ pip install -r requirements.txt
 
 1. Start the backend:
 
-bash
+```sh
 python backend/src/__init__.py
-
+```
 
 2. Access the frontend and start interacting with the Eatsage app.
 
