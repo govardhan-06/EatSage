@@ -5,3 +5,4 @@ python-dotenv
 uagents
 langchain-groq
 uagents-ai-engine
+geopy

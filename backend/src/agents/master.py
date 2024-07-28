@@ -28,8 +28,8 @@ master=Agent(
 
 fund_agent_if_low(master.wallet.address())
 
-@master.on_interval(period=10.0)
-async def initiate(ctx:Context):
+@master.on_interval(period=3.0)
+async def send_message(ctx:Context):
     await ctx.send(CUST_ADDRESS,UserPrompt(prompt="I am diabetic, suggest something for dinner"))
 
 if __name__=="__main__":

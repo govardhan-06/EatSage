@@ -1,4 +1,4 @@
-from uagents import Agent
+from uagents import Agent, Context
 from uagents.setup import fund_agent_if_low
 
 import os,sys
@@ -10,23 +10,29 @@ from backend.src.protocols.customer_proto import makeOrder
 
 load_dotenv()
 
+'''
+This is the script for customer agent
+'''
+
 NAME=os.getenv("CUST_NAME")
 SEED_PHRASE=os.getenv("CUST_SEED_PHRASE")
 DEL_ADDRESS=os.getenv("DEL_ADDRESS")
 RES_ADDRESS=os.getenv("RES_ADDRESS")
-MAILBOX=os.getenv("CUST_MAILBOX")
 
 customer=Agent(
     name=NAME,
     port=8000,
     seed=SEED_PHRASE,
-    endpoint=["http://127.0.0.1:8000/submit"],
-    mailbox=MAILBOX
+    endpoint=["http://127.0.0.1:8000/submit"]
 )
 
 fund_agent_if_low(customer.wallet.address())
 
 customer.include(makeOrder,publish_manifest=True)
+
+@customer.on_event('startup')
+async def startup(ctx:Context):
+    ctx.logger.info(f"Customer agent {customer.address} started")
 
 if __name__=="__main__":
     customer.run()

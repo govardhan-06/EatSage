@@ -3,8 +3,15 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
 import os,re,json
+from typing import List
+
+#For getting the current date, location of the users
+from datetime import datetime, timedelta
+from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
  
 makeOrder=Protocol(name="Make Orders",version="1.0")
+sendOrder=Protocol(name="Send Orders",version="1.0")
 
 GROQ_API_KEY=os.getenv("GROQ_API_KEY")
  
@@ -13,9 +20,19 @@ class UserPrompt(Model):
 
 class Response(Model):
     response:str
+
+class OrderDetails(Model):
+    location:str
+    date:datetime
+    duration:timedelta
+    order:List[int]
+    max_price:float
+
+class OrderConfirm(Model):
+    confirm:bool
  
 @makeOrder.on_message(model=UserPrompt)
-def handle_messages(ctx:Context,sender:str,p:UserPrompt):
+async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     # restaurant data context for the llm
     #incase of utilising an API, the api response can directly be requested from here
     context=[
@@ -73,7 +90,19 @@ def handle_messages(ctx:Context,sender:str,p:UserPrompt):
         data_dict = json.loads(json_string)
         
         # Print the dictionary
-        ctx.logger.info(f"Response: {data_dict}")
+        await ctx.logger.info(f"Response: {data_dict}")
         
     else:
-        ctx.logger.info(f"Response: {llmOutput.content}")
+        await ctx.logger.info(f"Response: {llmOutput.content}")
+
+@sendOrder.on_query(model=OrderDetails)
+async def orderPlace(ctx:Context,sender:str,order:OrderDetails):
+
+    
+
+
+
+    
+    
+    
+    
