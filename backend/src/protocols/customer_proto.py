@@ -1,9 +1,8 @@
 from uagents import Context, Model, Protocol
-from ai_engine import UAgentResponse, UAgentResponseType
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
-import os
+import os,re,json
  
 makeOrder=Protocol(name="Make Orders",version="1.0")
 
@@ -11,9 +10,12 @@ GROQ_API_KEY=os.getenv("GROQ_API_KEY")
  
 class UserPrompt(Model):
     prompt:str
+
+class Response(Model):
+    response:str
  
-@makeOrder.on_message(model=UserPrompt,replies={UAgentResponse})
-async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
+@makeOrder.on_message(model=UserPrompt)
+def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     # restaurant data context for the llm
     #incase of utilising an API, the api response can directly be requested from here
     context=[
@@ -62,4 +64,16 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
 
     chain_modifier= response_modifier_template | llm
     llmOutput=chain_modifier.invoke({"text":llmOutput.content})
-    await ctx.send(sender,UAgentResponse(message=str(llmOutput.content),type=UAgentResponseType.FINAL))
+    json_match = re.search(r'\{.*\}', llmOutput.content, re.DOTALL)
+
+    if json_match:
+        json_string = json_match.group(0)
+        
+        # Parse the JSON string into a dictionary
+        data_dict = json.loads(json_string)
+        
+        # Print the dictionary
+        ctx.logger.info(f"Response: {data_dict}")
+        
+    else:
+        ctx.logger.info(f"Response: {llmOutput.content}")
