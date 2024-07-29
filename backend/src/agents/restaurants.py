@@ -1,12 +1,11 @@
 from uagents import Agent
 from uagents.setup import fund_agent_if_low
-from datetime import datetime
 
 import os,sys
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-from backend.src.protocols.restaurant_proto import take_Orders
+from backend.src.protocols.restaurant_proto import take_Orders,get_valet
 
 load_dotenv()
 
@@ -25,6 +24,7 @@ restaurant=Agent(
 fund_agent_if_low(restaurant.wallet.address())
 
 restaurant.include(take_Orders,publish_manifest=True)
+restaurant.include(get_valet,publish_manifest=True)
 
 if __name__=="__main__":
     restaurant.run()
