@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from backend.src.protocols.customer_proto import makeOrder
+from backend.src.protocols.customer_proto import getResConfirm
 
 load_dotenv()
 
@@ -16,8 +17,6 @@ This is the script for customer agent
 
 NAME=os.getenv("CUST_NAME")
 SEED_PHRASE=os.getenv("CUST_SEED_PHRASE")
-DEL_ADDRESS=os.getenv("DEL_ADDRESS")
-RES_ADDRESS=os.getenv("RES_ADDRESS")
 
 customer=Agent(
     name=NAME,
@@ -29,10 +28,7 @@ customer=Agent(
 fund_agent_if_low(customer.wallet.address())
 
 customer.include(makeOrder,publish_manifest=True)
-
-@customer.on_event('startup')
-async def startup(ctx:Context):
-    ctx.logger.info(f"Customer agent {customer.address} started")
+customer.include(getResConfirm,publish_manifest=True)
 
 if __name__=="__main__":
     customer.run()

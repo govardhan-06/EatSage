@@ -6,6 +6,7 @@ This script is used to test the functionality of the entire application
 '''
 
 import os,sys
+from datetime import datetime
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
@@ -16,9 +17,6 @@ DEL_ADDRESS=os.getenv("DEL_ADDRESS")
 RES_ADDRESS=os.getenv("RES_ADDRESS")
 CUST_ADDRESS=os.getenv("CUST_ADDRESS")
 
-class UserPrompt(Model):
-    prompt:str
-
 master=Agent(
     name="Master",
     port=8005,
@@ -28,9 +26,26 @@ master=Agent(
 
 fund_agent_if_low(master.wallet.address())
 
-@master.on_interval(period=3.0)
+class UserPrompt(Model):
+    prompt:str
+
+class OrderDetails(Model):
+    location:list
+    date:datetime
+    restaurant:str
+    order:dict
+    max_price:float
+
+@master.on_event('startup')
 async def send_message(ctx:Context):
-    await ctx.send(CUST_ADDRESS,UserPrompt(prompt="I am diabetic, suggest something for dinner"))
+    await ctx.send(CUST_ADDRESS,UserPrompt(prompt="Suggest some italian dishes for dinner"))
+
+@master.on_message(model=OrderDetails)
+def process_order(ctx:Context, sender:str, order:OrderDetails):
+    ctx.logger.info(f"Location: {order.location}")
+    ctx.logger.info(f"Date: {order.date}")
+    ctx.logger.info(f"Order Details: {order.order}")
+    ctx.logger.info(f"Max Price: {order.max_price}")
 
 if __name__=="__main__":
     master.run()

@@ -2,18 +2,23 @@ from uagents import Context, Model, Protocol
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
-import os,re,json
+import os,re,json,sys
 from typing import List
+from backend.src.utils.exception import customException
 
 #For getting the current date, location of the users
-from datetime import datetime, timedelta
-from geopy.distance import geodesic
-from geopy.geocoders import Nominatim
+from datetime import datetime
+import geocoder
  
 makeOrder=Protocol(name="Make Orders",version="1.0")
-sendOrder=Protocol(name="Send Orders",version="1.0")
+getResConfirm=Protocol(name="Getting Restaurant Confirmation",version="1.0")
+
+MASTER="agent1qturspnj7cpr2z9axv8pkrlwpqyre63pj2j3e3pewacyq3x3wur57e8czsm"
 
 GROQ_API_KEY=os.getenv("GROQ_API_KEY")
+
+DEL_ADDRESS=os.getenv("DEL_ADDRESS")
+RES_ADDRESS=os.getenv("RES_ADDRESS")
  
 class UserPrompt(Model):
     prompt:str
@@ -22,17 +27,41 @@ class Response(Model):
     response:str
 
 class OrderDetails(Model):
-    location:str
+    location:list
     date:datetime
-    duration:timedelta
-    order:List[int]
+    restaurant:str
+    order:dict
     max_price:float
 
 class OrderConfirm(Model):
     confirm:bool
+
+class OrderConfirmation(Model):
+    orderID:str
+    totalCost:float
+    status:bool
+    message:str
+
+def agent_location() -> list:
+    '''
+    This function returns the location of the agent using IP address.
+    '''
+    try:
+        g = geocoder.ip('me')
+ 
+        agent_loc = g.latlng
+    except Exception as e:
+        raise customException(e,sys)
+
+    return agent_loc
  
 @makeOrder.on_message(model=UserPrompt)
 async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
+    '''
+    This function handles the messages from the user and prepares the order according to the user requirements.
+    '''
+    current_loc=agent_location()
+    ctx.storage.set("location",current_loc)
     # restaurant data context for the llm
     #incase of utilising an API, the api response can directly be requested from here
     context=[
@@ -52,6 +81,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
                 "You must suggest the food items from a single restaurant."
                 "The output must be in JSON format. You must answer in this format: "
                 '{"Restaurant" : <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
+                "The placeholders <value> must be filled with the correct data from the given context"
                 "The output must be a proper meal rather than a list of dishes from the best available restaurant."
                 "Strictly, stick to the provided context"
                 f" Use this context to suggest the food items and restaurant: {context}"
@@ -72,7 +102,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
                 "The output must be a JSON"
                 "Follow this format: "
                 '{"Restaurant" : <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
-                "The '<value> spaces must be filled with the appropriate data from the given prompt"
+                "The '<value> spaces must be filled with the appropriate data from the given prompt and should not be left as None type"
             )
         ),
         HumanMessagePromptTemplate.from_template("{text}"),
@@ -90,19 +120,22 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
         data_dict = json.loads(json_string)
         
         # Print the dictionary
-        await ctx.logger.info(f"Response: {data_dict}")
+        ctx.logger.info(f"Response: {data_dict}")
         
     else:
-        await ctx.logger.info(f"Response: {llmOutput.content}")
-
-@sendOrder.on_query(model=OrderDetails)
-async def orderPlace(ctx:Context,sender:str,order:OrderDetails):
-
+        ctx.logger.info(f"Response: {llmOutput.content}")
     
+    restaurant=data_dict['Restaurant']
+    dishes=data_dict['Dishes']
+    max_price=0.0
+    for dish in dishes:
+        max_price+=dish['itemcost']
+    
+    await ctx.send(RES_ADDRESS, OrderDetails(location=current_loc, date=datetime.now(), restaurant=restaurant, order=dishes, max_price=max_price))
 
-
-
-    
-    
-    
-    
+@getResConfirm.on_message(model=OrderConfirmation)
+async def rest_confirm(ctx:Context, sender:str, resMessage:OrderConfirmation):
+    ctx.logger.info(f"Order ID: {resMessage.orderID}")
+    ctx.logger.info(f"Order status: {resMessage.status}")
+    ctx.logger.info(f"Total Price: {resMessage.totalCost}")
+    ctx.logger.info(f"Message: {resMessage.message}")
