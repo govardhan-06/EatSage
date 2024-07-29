@@ -30,7 +30,7 @@ class OrderDetails(Model):
     location:list
     date:datetime
     restaurant:str
-    order:dict
+    order:list
     max_price:float
 
 class OrderConfirm(Model):
@@ -61,7 +61,6 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     This function handles the messages from the user and prepares the order according to the user requirements.
     '''
     current_loc=agent_location()
-    ctx.storage.set("location",current_loc)
     # restaurant data context for the llm
     #incase of utilising an API, the api response can directly be requested from here
     context=[
@@ -81,6 +80,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
                 "You must suggest the food items from a single restaurant."
                 "The output must be in JSON format. You must answer in this format: "
                 '{"Restaurant" : <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
+                "The key names must be the same as given in the prompt"
                 "The placeholders <value> must be filled with the correct data from the given context"
                 "The output must be a proper meal rather than a list of dishes from the best available restaurant."
                 "Strictly, stick to the provided context"
