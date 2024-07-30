@@ -1,6 +1,7 @@
 from uagents import Context, Model, Protocol
 from datetime import datetime
 import os,sys,uuid,geocoder
+from geopy.distance import geodesic
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from backend.src.utils.exception import customException
@@ -107,6 +108,10 @@ async def recieve_Orders(ctx:Context,sender:str,newOrders:OrderDetails):
 async def valet_confirm_message(ctx:Context, sender:str, valetmsg:ValetConfirm):
     ctx.logger.info(f"Valet Address: {valetmsg.location}")
     ctx.logger.info(f"Valet Message: {valetmsg.message}")
+
+    cust_message=f"Valet Agent {sender} picked up the order and will be delivering it soon..."
+
+    await ctx.send(CUST_ADDRESS,OrderPickupMessage(deliveryPartner=sender,message=cust_message))
 
     
 

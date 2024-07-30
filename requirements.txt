@@ -6,3 +6,4 @@ uagents
 langchain-groq
 uagents-ai-engine
 geocoder
+geopy

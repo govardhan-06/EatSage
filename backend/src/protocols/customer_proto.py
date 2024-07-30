@@ -1,4 +1,5 @@
 from uagents import Context, Model, Protocol
+from uagents.network import wait_for_tx_to_complete
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
@@ -12,6 +13,8 @@ import geocoder
  
 makeOrder=Protocol(name="Make Orders",version="1.0")
 getResConfirm=Protocol(name="Getting Restaurant Confirmation",version="1.0")
+orderPickupConfirm=Protocol(name="Valet Agent Delivery",version="1.0")
+bill_payment=Protocol("Pay the final bill",version="1.0")
 
 MASTER="agent1qturspnj7cpr2z9axv8pkrlwpqyre63pj2j3e3pewacyq3x3wur57e8czsm"
 
@@ -42,6 +45,16 @@ class OrderConfirmation(Model):
     status:bool
     message:str
 
+class OrderPickupMessage(Model):
+    deliveryPartner:str
+    message:str
+
+class Acknowledgment(Model):
+    message:str
+    final_bill:float
+ 
+DENOM = "atestfet"  #Since we are in dev phase
+
 def agent_location() -> list:
     '''
     This function returns the location of the agent using IP address.
@@ -55,7 +68,7 @@ def agent_location() -> list:
 
     return agent_loc
  
-@makeOrder.on_message(model=UserPrompt)
+@makeOrder.on_message(model=UserPrompt,replies=OrderDetails)
 async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     '''
     This function handles the messages from the user and prepares the order according to the user requirements.
@@ -139,3 +152,11 @@ async def rest_confirm(ctx:Context, sender:str, resMessage:OrderConfirmation):
     ctx.logger.info(f"Order status: {resMessage.status}")
     ctx.logger.info(f"Total Price: {resMessage.totalCost}")
     ctx.logger.info(f"Message: {resMessage.message}")
+
+@orderPickupConfirm.on_message(model=OrderPickupMessage,replies=Acknowledgment)
+async def order_pickup(ctx:Context, sender:str, orderPickupMessage:OrderPickupMessage):
+    ctx.logger.info(f"Valet Agent Address: {sender}")
+    ctx.logger.info(f"Message: {orderPickupMessage.message}")
+
+    await ctx.send(DEL_ADDRESS,Acknowledgment(message="Order Delivered. Thank You",final_bill=100))
+

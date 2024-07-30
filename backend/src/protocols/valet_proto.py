@@ -1,8 +1,5 @@
 from uagents import Context, Model, Protocol
-from datetime import datetime
-import os,sys,uuid,geocoder
-
-import time
+import os,sys,geocoder
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from backend.src.utils.exception import customException
@@ -21,7 +18,9 @@ class ValetConfirm(Model):
     location:list
     message:str
 
-get_Calls=Protocol("Getting orders from the restaurant agent")
+get_Calls=Protocol("Getting orders from the restaurant agent",version="1.0")
+initiate_payment=Protocol("Initiate Bill Payment",version="1.0")
+confirm_pay=Protocol("Confirm payment",version="1.0")
 
 def agent_location() -> list:
     '''
@@ -62,7 +61,6 @@ async def recieve_delivery_orders(ctx:Context,sender:str,newCall:ValetMessage):
         await ctx.send(RES_ADDRESS,ValetConfirm(location=valet_loc,message=val_message))
 
 
-    
 
 
 
