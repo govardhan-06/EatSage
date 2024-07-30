@@ -17,9 +17,9 @@ CUST_ADDRESS=os.getenv("CUST_ADDRESS")
 
 restaurant=Agent(
     name=NAME,
-    port=8001,
+    port=8002,
     seed=SEED_PHRASE,
-    endpoint=["http://127.0.0.1:8001/submit"]
+    endpoint=["http://127.0.0.1:8002/submit"],
 )
 
 fund_agent_if_low(restaurant.wallet.address())

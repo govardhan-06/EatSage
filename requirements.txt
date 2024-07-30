@@ -7,3 +7,4 @@ langchain-groq
 uagents-ai-engine
 geocoder
 geopy
+fastapi

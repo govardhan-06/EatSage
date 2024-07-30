@@ -17,9 +17,9 @@ CUST_ADDRESS=os.getenv("CUST_ADDRESS")
 
 valet=Agent(
     name=NAME,
-    port=8002,
+    port=8003,
     seed=SEED_PHRASE,
-    endpoint=["http://127.0.0.1:8002/submit"]
+    endpoint=["http://127.0.0.1:8003/submit"]
 )
 
 fund_agent_if_low(valet.wallet.address())

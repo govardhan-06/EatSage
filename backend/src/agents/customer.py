@@ -20,9 +20,9 @@ DEL_ADDRESS=os.getenv("DEL_ADDRESS")
 
 customer=Agent(
     name=NAME,
-    port=8000,
+    port=8001,
     seed=SEED_PHRASE,
-    endpoint=["http://127.0.0.1:8000/submit"]
+    endpoint=["http://127.0.0.1:8001/submit"],
 )
 
 fund_agent_if_low(customer.wallet.address())

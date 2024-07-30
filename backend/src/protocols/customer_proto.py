@@ -67,13 +67,18 @@ def agent_location() -> list:
         raise customException(e,sys)
 
     return agent_loc
+
+def testAgent(req):
+    # Test the agent_location function
+    return req
  
-@makeOrder.on_message(model=UserPrompt,replies=OrderDetails)
+@makeOrder.on_query(model=UserPrompt,replies=OrderDetails)
 async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     '''
     This function handles the messages from the user and prepares the order according to the user requirements.
     '''
     current_loc=agent_location()
+    ctx.storage.set("location",current_loc)
     # restaurant data context for the llm
     #incase of utilising an API, the api response can directly be requested from here
     context=[
@@ -94,7 +99,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
                 "The output must be in JSON format. You must answer in this format: "
                 '{"Restaurant" : <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
                 "The key names must be the same as given in the prompt"
-                "The placeholders <value> must be filled with the correct data from the given context"
+                "The placeholders <value> must be filled with the correct data from the given context and should not be left as 'None'."
                 "The output must be a proper meal rather than a list of dishes from the best available restaurant."
                 "Strictly, stick to the provided context"
                 f" Use this context to suggest the food items and restaurant: {context}"
@@ -115,7 +120,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
                 "The output must be a JSON"
                 "Follow this format: "
                 '{"Restaurant" : <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
-                "The '<value> spaces must be filled with the appropriate data from the given prompt and should not be left as None type"
+                "The '<value> spaces must be filled with the appropriate data from the given prompt and should not be left as 'None'."
             )
         ),
         HumanMessagePromptTemplate.from_template("{text}"),
@@ -134,6 +139,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
         
         # Print the dictionary
         ctx.logger.info(f"Response: {data_dict}")
+        ctx.storage.set("AI Suggestion",data_dict)
         
     else:
         ctx.logger.info(f"Response: {llmOutput.content}")
