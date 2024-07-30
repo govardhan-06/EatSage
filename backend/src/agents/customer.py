@@ -42,12 +42,19 @@ class TransactionInfo(Model):
     amount:str
     denom:str
 
+class TransactionStatus(Model):
+    status:str
+
 @customer.on_message(model=PaymentRequest, replies=TransactionInfo)
 async def send_payment(ctx: Context, sender: str, msg: PaymentRequest):
     ctx.logger.info(f"Received payment request from {sender}: {msg}")
     transaction = ctx.ledger.send_tokens(msg.wallet_address, msg.amount, msg.denom, customer.wallet)
     
     await ctx.send(DEL_ADDRESS, TransactionInfo(tx_hash=transaction.tx_hash,amount=msg.amount,denom=msg.denom))
+
+@customer.on_message(model=TransactionStatus)
+async def send_status(ctx: Context, sender: str, msg: TransactionStatus):
+    ctx.logger.info(f"Message from {sender}: {msg.status}")
 
 if __name__=="__main__":
     customer.run()

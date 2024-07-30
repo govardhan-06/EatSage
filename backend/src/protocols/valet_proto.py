@@ -35,7 +35,7 @@ def agent_location() -> list:
 
     return agent_loc
 
-@get_Calls.on_message(model=ValetMessage)
+@get_Calls.on_message(model=ValetMessage,replies=ValetConfirm)
 async def recieve_delivery_orders(ctx:Context,sender:str,newCall:ValetMessage):
     '''
     Function to receive orders from the restaurant agent
