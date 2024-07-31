@@ -2,6 +2,24 @@
 
 This document provides a comprehensive guide to the backend API endpoints for managing customer, restaurant, and valet agents. The API is built using FastAPI and provides endpoints to run agents, send prompts, confirm orders, and retrieve information.
 
+### Order for Executing API Routes (for testing purposes)
+```
+/
+/customer
+/restaurant
+/valet
+/prompt
+/confirmOrder
+/currentOrders
+/acceptOrder
+/resConfirm
+/callValet
+/currentCall
+/confirmCall
+/getValet
+/valetMessage
+```
+
 ### Base URL
 
 All endpoints are accessible at the base URL: `http://0.0.0.0:8000`
