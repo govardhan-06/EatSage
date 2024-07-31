@@ -62,6 +62,7 @@ async def recieve_Orders(ctx:Context,sender:str,newOrders:OrderDetails):
     Function to receive orders from the customer agent
     '''
     rest_loc=agent_location()
+    ctx.storage.set("location",rest_loc)
     ctx.logger.info(f"New Order received from address {sender}")
     orderID = str(uuid.uuid4())
 

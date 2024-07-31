@@ -41,6 +41,7 @@ async def recieve_delivery_orders(ctx:Context,sender:str,newCall:ValetMessage):
     Function to receive orders from the restaurant agent
     '''
     valet_loc=agent_location()
+    ctx.storage.set("location",valet_loc)
     ctx.logger.info(f"New Delivery call received from address {sender}")
 
     #Log the information for valet's reference

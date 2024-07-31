@@ -139,7 +139,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
         
         # Print the dictionary
         ctx.logger.info(f"Response: {data_dict}")
-        ctx.storage.set("AI Suggestion",data_dict)
+        ctx.storage.set("Response",data_dict)
         
     else:
         ctx.logger.info(f"Response: {llmOutput.content}")
