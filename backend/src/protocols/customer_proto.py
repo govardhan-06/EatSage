@@ -3,7 +3,7 @@ from uagents.network import wait_for_tx_to_complete
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
-import os,re,json,sys
+import os,re,json,sys,time
 from typing import List
 from backend.src.utils.exception import customException
 
@@ -79,6 +79,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     '''
     current_loc=agent_location()
     ctx.storage.set("location",current_loc)
+    ctx.storage.set("confirm_order","no")
     # restaurant data context for the llm
     #incase of utilising an API, the api response can directly be requested from here
     context=[
@@ -95,9 +96,9 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
             content=(
                 "You are a friendly health assistant, who helps users to find the perfect food items based on their specific needs and preferences. "
                 "You must suggest delicious and nutritious options to keep them feeling their best. "
-                "You must suggest the food items from a single restaurant."
+                "You must choose the food items only from a single restaurant. This is a mandatory instruction which must not be violated."
                 "The output must be in JSON format. You must answer in this format: "
-                '{"Restaurant" : <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
+                '{"Restaurant" : <value>, "Locality": <value>, "AreaName": <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
                 "The key names must be the same as given in the prompt"
                 "The placeholders <value> must be filled with the correct data from the given context and should not be left as 'None'."
                 "The output must be a proper meal rather than a list of dishes from the best available restaurant."
@@ -119,7 +120,7 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
                 "You must extract neccessary information from the given prompt like Restaurant name, Dish name, Description and price."
                 "The output must be a JSON"
                 "Follow this format: "
-                '{"Restaurant" : <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
+                '{"Restaurant" : <value>, "Locality": <value>, "AreaName": <value>, "Dishes" :["itemname": <value>,"description": <value>,"itemcost": <value>]}'
                 "The '<value> spaces must be filled with the appropriate data from the given prompt and should not be left as 'None'."
             )
         ),
@@ -150,6 +151,9 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     for dish in dishes:
         max_price+=dish['itemcost']
     
+    ctx.logger.info("Confirming the order...")
+    while(ctx.storage.get("confirm_order")=="no"):
+        time.sleep(1)
     await ctx.send(RES_ADDRESS, OrderDetails(location=current_loc, date=datetime.now(), restaurant=restaurant, order=dishes, max_price=max_price))
 
 @getResConfirm.on_message(model=OrderConfirmation)
