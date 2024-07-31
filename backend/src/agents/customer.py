@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-from backend.src.protocols.customer_proto import makeOrder,getResConfirm,orderPickupConfirm,bill_payment
+from backend.src.protocols.customer_proto import makeOrder,sendOrder,getResConfirm,orderPickupConfirm
 
 load_dotenv()
 
@@ -28,9 +28,9 @@ customer=Agent(
 fund_agent_if_low(customer.wallet.address())
 
 customer.include(makeOrder,publish_manifest=True)
+customer.include(sendOrder,publish_manifest=True)
 customer.include(getResConfirm,publish_manifest=True)
 customer.include(orderPickupConfirm,publish_manifest=True)
-customer.include(bill_payment,publish_manifest=True)
 
 class PaymentRequest(Model):
     wallet_address: str

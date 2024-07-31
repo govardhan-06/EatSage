@@ -6,7 +6,7 @@ import os,sys
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-from backend.src.protocols.restaurant_proto import take_Orders,get_valet
+from backend.src.protocols.restaurant_proto import take_Orders,get_valet,acceptOrders,valet_Message
 
 load_dotenv()
 
@@ -26,6 +26,8 @@ fund_agent_if_low(restaurant.wallet.address())
 
 restaurant.include(take_Orders,publish_manifest=True)
 restaurant.include(get_valet,publish_manifest=True)
+restaurant.include(acceptOrders,publish_manifest=True)
+restaurant.include(valet_Message,publish_manifest=True)
 
 class PaymentRequest(Model):
     wallet_address: str

@@ -12,9 +12,9 @@ from datetime import datetime
 import geocoder
  
 makeOrder=Protocol(name="Make Orders",version="1.0")
+sendOrder=Protocol("Sending the confirmed order to restaurant",version="1.0")
 getResConfirm=Protocol(name="Getting Restaurant Confirmation",version="1.0")
 orderPickupConfirm=Protocol(name="Valet Agent Delivery",version="1.0")
-bill_payment=Protocol("Pay the final bill",version="1.0")
 
 MASTER="agent1qturspnj7cpr2z9axv8pkrlwpqyre63pj2j3e3pewacyq3x3wur57e8czsm"
 
@@ -31,15 +31,15 @@ class Response(Model):
 
 class OrderDetails(Model):
     location:list
-    date:datetime
+    date:str
     restaurant:str
     order:list
     max_price:float
 
-class OrderConfirm(Model):
+class Confirm(Model):
     confirm:bool
 
-class OrderConfirmation(Model):
+class AcceptOrder(Model):
     orderID:str
     totalCost:float
     status:bool
@@ -52,6 +52,7 @@ class OrderPickupMessage(Model):
 class Acknowledgment(Model):
     message:str
     final_bill:float
+
  
 DENOM = "atestfet"  #Since we are in dev phase
 
@@ -73,13 +74,11 @@ def testAgent(req):
     return req
  
 @makeOrder.on_query(model=UserPrompt,replies=OrderDetails)
-async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
+async def make_Order(ctx:Context,sender:str,p:UserPrompt):
     '''
     This function handles the messages from the user and prepares the order according to the user requirements.
     '''
     current_loc=agent_location()
-    ctx.storage.set("location",current_loc)
-    ctx.storage.set("confirm_order","no")
     # restaurant data context for the llm
     #incase of utilising an API, the api response can directly be requested from here
     context=[
@@ -140,7 +139,6 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
         
         # Print the dictionary
         ctx.logger.info(f"Response: {data_dict}")
-        ctx.storage.set("Response",data_dict)
         
     else:
         ctx.logger.info(f"Response: {llmOutput.content}")
@@ -151,22 +149,39 @@ async def handle_messages(ctx:Context,sender:str,p:UserPrompt):
     for dish in dishes:
         max_price+=dish['itemcost']
     
-    ctx.logger.info("Confirming the order...")
-    while(ctx.storage.get("confirm_order")=="no"):
-        time.sleep(1)
-    await ctx.send(RES_ADDRESS, OrderDetails(location=current_loc, date=datetime.now(), restaurant=restaurant, order=dishes, max_price=max_price))
+    ctx.storage.set("location",current_loc)
+    ctx.storage.set("restaurant",restaurant)
+    ctx.storage.set("dishes",dishes)
+    ctx.storage.set("time",str(datetime.now()))
+    ctx.storage.set("max_price",max_price)
 
-@getResConfirm.on_message(model=OrderConfirmation)
-async def rest_confirm(ctx:Context, sender:str, resMessage:OrderConfirmation):
+@sendOrder.on_query(model=Confirm,replies=OrderDetails)
+async def confirm_order(ctx: Context,sender:str, user_confirmation: Confirm):
+    if(user_confirmation.confirm):
+        await ctx.send(RES_ADDRESS, OrderDetails(location=ctx.storage.get("location"), 
+                                                 date=ctx.storage.get("time"), 
+                                                 restaurant=ctx.storage.get("restaurant"),
+                                                 order=ctx.storage.get("dishes"), 
+                                                 max_price=ctx.storage.get("max_price")))
+
+@getResConfirm.on_message(model=AcceptOrder)
+async def rest_confirm(ctx:Context, sender:str, resMessage:AcceptOrder):
     ctx.logger.info(f"Order ID: {resMessage.orderID}")
     ctx.logger.info(f"Order status: {resMessage.status}")
     ctx.logger.info(f"Total Price: {resMessage.totalCost}")
     ctx.logger.info(f"Message: {resMessage.message}")
+
+    ctx.storage.set("orderID",resMessage.orderID)
+    ctx.storage.set("status",resMessage.status)
+    ctx.storage.set("totalCost",resMessage.totalCost)
+    ctx.storage.set("message",resMessage.message)
 
 @orderPickupConfirm.on_message(model=OrderPickupMessage,replies=Acknowledgment)
 async def order_pickup(ctx:Context, sender:str, orderPickupMessage:OrderPickupMessage):
     ctx.logger.info(f"Valet Agent Address: {sender}")
     ctx.logger.info(f"Message: {orderPickupMessage.message}")
 
-    await ctx.send(DEL_ADDRESS,Acknowledgment(message="Order Delivered. Thank You",final_bill=100))
+    ctx.storage.set("valet address",sender)
+    ctx.storage.set("valet message",orderPickupMessage.message)
 
+    await ctx.send(DEL_ADDRESS,Acknowledgment(message="Order Delivered. Thank You",final_bill=100))

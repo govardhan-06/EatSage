@@ -6,7 +6,7 @@ import os,sys
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-from backend.src.protocols.valet_proto import get_Calls,initiate_payment,confirm_pay
+from backend.src.protocols.valet_proto import get_Calls,confirm_Calls
 
 load_dotenv()
 
@@ -25,6 +25,7 @@ valet=Agent(
 fund_agent_if_low(valet.wallet.address())
 
 valet.include(get_Calls,publish_manifest=True)
+valet.include(confirm_Calls,publish_manifest=True)
 
 class PaymentRequest(Model):
     wallet_address: str
