@@ -18,6 +18,10 @@ This document provides a comprehensive guide to the backend API endpoints for ma
 /confirmCall
 /getValet
 /valetMessage
+/confirmDelivery
+/transactionStatus
+/statusFoodPayment
+/statusPayment
 ```
 
 ### Base URL
