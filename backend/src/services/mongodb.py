@@ -41,7 +41,7 @@ class MongoDB:
             db = self.client['Restaurant']
             db.create_collection('info')
             collection=self.client['Restaurant']['info']
-            with open("F:/EatSage/backend/src/restaurantData/restaurants.json", 'r') as file:
+            with open("F:/EatSage/backend/src/restaurantData/llmContext.txt", 'r') as file:
                 data = json.load(file)
             collection.insert_many(data)
             logging.info("Pushed successfully")
