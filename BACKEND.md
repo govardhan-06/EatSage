@@ -38,7 +38,7 @@ No authentication is required to access these endpoints.
 
 ## Endpoints
 
-### General Endpoints
+### 1. General Endpoints
 
 #### Redirect to Swagger UI
 
@@ -47,7 +47,7 @@ No authentication is required to access these endpoints.
 - **Description**: Redirects to the Swagger UI page.
 - **Response**: Redirects to `/docs`.
 
-### Customer Endpoints
+### 2. Customer Endpoints
 
 #### Run Customer Agent
 
@@ -118,7 +118,7 @@ No authentication is required to access these endpoints.
   - `200 OK`: Returns the transaction status.
   - `500 Internal Server Error`: Error occurred while checking the transaction status.
 
-### Restaurant Endpoints
+### 3. Restaurant Endpoints
 
 #### Run Restaurant Agent
 
@@ -176,7 +176,7 @@ No authentication is required to access these endpoints.
   - `200 OK`: Returns food payment status.
   - `500 Internal Server Error`: Error occurred while checking food payment status.
 
-### Valet Endpoints
+### 4. Valet Endpoints
 
 #### Run Valet Agent
 
