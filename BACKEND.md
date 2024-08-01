@@ -1,6 +1,8 @@
-## API Documentation for Backend
+# EatSage API Documentation
 
-This document provides a comprehensive guide to the backend API endpoints for managing customer, restaurant, and valet agents. The API is built using FastAPI and provides endpoints to run agents, send prompts, confirm orders, and retrieve information.
+## Introduction
+
+The EatSage API provides endpoints to manage customer orders, restaurant confirmations, and valet services. This API is designed to interact with customer, restaurant, and valet agents to facilitate food ordering, preparation, and delivery processes.
 
 ### Order for Executing API Routes (for testing purposes)
 ```
@@ -24,156 +26,216 @@ This document provides a comprehensive guide to the backend API endpoints for ma
 /statusPayment
 ```
 
-### Base URL
+## Base URL
 
-All endpoints are accessible at the base URL: `http://0.0.0.0:8000`
+```
+http://localhost:8000
+```
 
-### Endpoints
+## Authentication
 
-#### 1. Home
+No authentication is required to access these endpoints.
 
-- **Endpoint**: `/`
+## Endpoints
+
+### General Endpoints
+
+#### Redirect to Swagger UI
+
+- **URL**: `/`
 - **Method**: `GET`
-- **Description**: Redirects to the SwaggerUI documentation page.
+- **Description**: Redirects to the Swagger UI page.
+- **Response**: Redirects to `/docs`.
 
-#### 2. Run Customer Agent
+### Customer Endpoints
 
-- **Endpoint**: `/customer`
+#### Run Customer Agent
+
+- **URL**: `/customer`
 - **Method**: `POST`
 - **Description**: Starts the customer agent.
 - **Responses**:
   - `200 OK`: Customer agent started successfully.
   - `500 Internal Server Error`: Error occurred while starting the customer agent.
 
-#### 3. Run Restaurant Agent
+#### Send Customer Prompt
 
-- **Endpoint**: `/restaurant`
+- **URL**: `/prompt`
+- **Method**: `POST`
+- **Description**: Sends a prompt to the customer agent.
+- **Parameters**:
+  - `prompt` (string): The prompt to send to the customer agent.
+- **Responses**:
+  - `200 OK`: Returns the restaurant and dishes from the customer agent.
+  - `500 Internal Server Error`: Error occurred while sending the prompt.
+
+#### Confirm Customer Order
+
+- **URL**: `/confirmOrder`
+- **Method**: `POST`
+- **Description**: Confirms an order with the customer agent.
+- **Parameters**:
+  - `req` (boolean): Confirmation status.
+- **Responses**:
+  - `200 OK`: Order confirmed.
+  - `500 Internal Server Error`: Error occurred while confirming the order.
+
+#### Restaurant Confirmation Message
+
+- **URL**: `/resConfirm`
+- **Method**: `POST`
+- **Description**: Gets confirmation message from the restaurant agent.
+- **Responses**:
+  - `200 OK`: Returns order details including order ID, status, total cost, and message.
+  - `500 Internal Server Error`: Error occurred while fetching the confirmation message.
+
+#### Valet Message
+
+- **URL**: `/valetMessage`
+- **Method**: `POST`
+- **Description**: Reads the valet message.
+- **Responses**:
+  - `200 OK`: Returns valet address and message.
+  - `500 Internal Server Error`: Error occurred while reading the valet message.
+
+#### Confirm Order Delivery
+
+- **URL**: `/confirmDelivery`
+- **Method**: `POST`
+- **Description**: Acknowledges order delivery and raises the payment.
+- **Parameters**:
+  - `req` (boolean): Delivery confirmation status.
+- **Responses**:
+  - `200 OK`: Order delivery confirmed.
+  - `500 Internal Server Error`: Error occurred while confirming delivery.
+
+#### Transaction Status
+
+- **URL**: `/transactionStatus`
+- **Method**: `POST`
+- **Description**: Checks the transaction status.
+- **Responses**:
+  - `200 OK`: Returns the transaction status.
+  - `500 Internal Server Error`: Error occurred while checking the transaction status.
+
+### Restaurant Endpoints
+
+#### Run Restaurant Agent
+
+- **URL**: `/restaurant`
 - **Method**: `POST`
 - **Description**: Starts the restaurant agent.
 - **Responses**:
   - `200 OK`: Restaurant agent started successfully.
   - `500 Internal Server Error`: Error occurred while starting the restaurant agent.
 
-#### 4. Run Valet Agent
+#### Get Current Orders
 
-- **Endpoint**: `/valet`
+- **URL**: `/currentOrders`
+- **Method**: `POST`
+- **Description**: Gets the current orders from the customer agent.
+- **Responses**:
+  - `200 OK`: Returns current orders.
+  - `500 Internal Server Error`: Error occurred while fetching current orders.
+
+#### Accept Order
+
+- **URL**: `/acceptOrder`
+- **Method**: `POST`
+- **Description**: Accepts an order from the customer agent.
+- **Parameters**:
+  - `req` (boolean): Order acceptance status.
+- **Responses**:
+  - `200 OK`: Order accepted.
+  - `500 Internal Server Error`: Error occurred while accepting the order.
+
+#### Call Valet
+
+- **URL**: `/callValet`
+- **Method**: `POST`
+- **Description**: Calls the valet agent.
+- **Responses**:
+  - `200 OK`: Valet call initiated.
+  - `500 Internal Server Error`: Error occurred while calling the valet.
+
+#### Get Valet Information
+
+- **URL**: `/getValet`
+- **Method**: `POST`
+- **Description**: Gets the valet agent's information.
+- **Responses**:
+  - `200 OK`: Returns valet address, message, and location.
+  - `500 Internal Server Error`: Error occurred while fetching valet information.
+
+#### Status of Food Payment
+
+- **URL**: `/statusFoodPayment`
+- **Method**: `POST`
+- **Description**: Gets the status of food payment.
+- **Responses**:
+  - `200 OK`: Returns food payment status.
+  - `500 Internal Server Error`: Error occurred while checking food payment status.
+
+### Valet Endpoints
+
+#### Run Valet Agent
+
+- **URL**: `/valet`
 - **Method**: `POST`
 - **Description**: Starts the valet agent.
 - **Responses**:
   - `200 OK`: Valet agent started successfully.
   - `500 Internal Server Error`: Error occurred while starting the valet agent.
 
-#### 5. Send Customer Prompt
+#### Get Current Call
 
-- **Endpoint**: `/prompt`
+- **URL**: `/currentCall`
 - **Method**: `POST`
-- **Description**: Sends a prompt to the customer agent.
+- **Description**: Gets the current call from the restaurant agent.
+- **Responses**:
+  - `200 OK`: Returns current call details.
+  - `500 Internal Server Error`: Error occurred while fetching current call details.
+
+#### Confirm Delivery Call
+
+- **URL**: `/confirmCall`
+- **Method**: `POST`
+- **Description**: Accepts a delivery call from the restaurant agent.
 - **Parameters**:
-  - `prompt`: (string) The prompt message to be sent.
+  - `req` (boolean): Delivery call acceptance status.
 - **Responses**:
-  - `200 OK`: Prompt sent successfully, returns restaurant and dishes information.
-  - `500 Internal Server Error`: Error occurred while processing the prompt.
+  - `200 OK`: Delivery call accepted.
+  - `500 Internal Server Error`: Error occurred while accepting the delivery call.
 
-#### 6. Confirm Customer Order
+#### Status of Payment
 
-- **Endpoint**: `/confirmOrder`
+- **URL**: `/statusPayment`
 - **Method**: `POST`
-- **Description**: Confirms an order with the customer agent.
-- **Parameters**:
-  - `req`: (boolean) Confirmation status.
+- **Description**: Confirms payment from the restaurant, marking the end of the delivery.
 - **Responses**:
-  - `200 OK`: Order confirmed successfully.
-  - `500 Internal Server Error`: Error occurred while confirming the order.
+  - `200 OK`: Returns payment status.
+  - `500 Internal Server Error`: Error occurred while confirming payment.
 
-#### 7. Restaurant Confirmation
+## Error Handling
 
-- **Endpoint**: `/resConfirm`
-- **Method**: `POST`
-- **Description**: Retrieves confirmation message from the restaurant agent.
-- **Responses**:
-  - `200 OK`: Success, returns order details and status.
-  - `500 Internal Server Error`: Error occurred while retrieving the confirmation message.
+All error responses will be in the following format:
 
-#### 8. Valet Message
-
-- **Endpoint**: `/valetMessage`
-- **Method**: `POST`
-- **Description**: Retrieves valet agent information.
-- **Responses**:
-  - `200 OK`: Success, returns valet address and message.
-  - `500 Internal Server Error`: Error occurred while retrieving valet information.
-
-#### 9. Get Current Orders
-
-- **Endpoint**: `/currentOrders`
-- **Method**: `POST`
-- **Description**: Retrieves current orders from the customer agent for the restaurant.
-- **Responses**:
-  - `200 OK`: Success, returns current orders.
-  - `500 Internal Server Error`: Error occurred while retrieving current orders.
-
-#### 10. Accept Order
-
-- **Endpoint**: `/acceptOrder`
-- **Method**: `POST`
-- **Description**: Accepts an order from the customer agent for the restaurant.
-- **Parameters**:
-  - `req`: (boolean) Acceptance status.
-- **Responses**:
-  - `200 OK`: Order accepted successfully.
-  - `500 Internal Server Error`: Error occurred while accepting the order.
-
-#### 11. Call Valet
-
-- **Endpoint**: `/callValet`
-- **Method**: `POST`
-- **Description**: Calls the valet agent.
-- **Responses**:
-  - `200 OK`: Valet call initiated successfully.
-  - `500 Internal Server Error`: Error occurred while calling the valet.
-
-#### 12. Get Valet Information
-
-- **Endpoint**: `/getValet`
-- **Method**: `POST`
-- **Description**: Retrieves valet agent's information.
-- **Responses**:
-  - `200 OK`: Success, returns valet address, message, and location.
-  - `500 Internal Server Error`: Error occurred while retrieving valet information.
-
-#### 13. Get Current Call
-
-- **Endpoint**: `/currentCall`
-- **Method**: `POST`
-- **Description**: Retrieves the current delivery call from the restaurant agent for the valet.
-- **Responses**:
-  - `200 OK`: Success, returns current call details.
-  - `500 Internal Server Error`: Error occurred while retrieving the current call.
-
-#### 14. Confirm Delivery Call
-
-- **Endpoint**: `/confirmCall`
-- **Method**: `POST`
-- **Description**: Confirms a delivery call from the restaurant agent for the valet.
-- **Parameters**:
-  - `req`: (boolean) Confirmation status.
-- **Responses**:
-  - `200 OK`: Delivery call accepted successfully.
-  - `500 Internal Server Error`: Error occurred while confirming the delivery call.
-
-### Error Handling
-
-- **500 Internal Server Error**: Indicates that an error occurred while processing the request. The response will contain the error details.
-
-### Running the Server
-
-To run the FastAPI server, use the following command:
-
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8000
+```json
+{
+  "error": "Error message"
+}
 ```
 
-### Additional Information
+## Usage
 
-- **SwaggerUI**: The API documentation can be accessed at `/docs` for interactive API testing.
-- **JSON Responses**: All successful responses will have a `message` field indicating the success status and additional data as specified. Errors will have an `error` field with the error details.
+To test the API, you can use tools like Postman or cURL. Make sure to follow the parameter requirements for each endpoint. For example, to run the customer agent, you can send a POST request to `/customer` using Postman or:
+
+```bash
+curl -X POST http://localhost:8000/customer
+```
+
+For more detailed API interaction, refer to the Swagger UI at `http://localhost:8000/docs`.
+
+## Conclusion
+
+The EatSage API facilitates efficient interaction between customer, restaurant, and valet agents, ensuring a smooth and automated process for food ordering, preparation, and delivery. Use the endpoints as described above to integrate with the EatSage backend service.
