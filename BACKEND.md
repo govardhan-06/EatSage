@@ -78,7 +78,7 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
 To run the FastAPI server, execute the following command:
 
 ```bash
-uvicorn backend.main:app --reload
+uvicorn backend.application:app --reload
 ```
 
 The server will start at `http://127.0.0.1:8000/` and the API documentation can be accessed at `http://127.0.0.1:8000/docs`.
