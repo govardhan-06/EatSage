@@ -26,6 +26,63 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
 /statusPayment
 ```
 
+## Installation
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/your-repo/eatsage.git
+   cd eatsage
+   ```
+
+2. **Create a virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables:**
+   Create a `.env` file in the root directory and add the following:
+   ```dotenv
+   MONGO_DB_URI=""
+   GROQ_API_KEY=""
+   
+   # Customer Agent
+   CUST_NAME="EatSage_Customer"
+   CUST_SEED_PHRASE="customer is the king. Welcome to EatSage!!"
+   CUST_ADDRESS="agent1q0k2rwfj5up9s7z8896pyrchzqawdywcj4ua4vwhfdky0fstvvjtqu3f9kw"
+   CUST_MAILBOX="96b28a58-60d4-46df-9de5-66d94d39da4b"
+   CUST_STORAGE="agent1q0k2rwfj5u_data.json"
+
+   # Delivery Partner Agent
+   DEL_NAME="EatSage_Delivery"
+   DEL_SEED_PHRASE="EatSage delivery partner, committed to customer service"
+   DEL_ADDRESS="agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx"
+   DEL_MAILBOX="c304507f-3f41-42ae-a63e-c0371b708790"
+   DEL_STORAGE="agent1qgu230r5w7_data.json"
+
+   # Restaurant Agent
+   RES_NAME="EatSage_Restaurant"
+   RES_SEED_PHRASE="We are the elite eatsage restaurants!! Food Quality and Customer service is our topmost priority"
+   RES_ADDRESS="agent1q2h5xkny4c9kmde7c7hy3394y708us338j55a5y0yfk3t3udwqrxk4zp73s"
+   RES_MAILBOX="f246b289-9173-4f9c-9f7e-c675cf810e04"
+   RES_STORAGE="agent1q2h5xkny4c_data.json"
+   ```
+
+## Running the Server
+
+To run the FastAPI server, execute the following command:
+
+```bash
+uvicorn backend.main:app --reload
+```
+
+The server will start at `http://127.0.0.1:8000/` and the API documentation can be accessed at `http://127.0.0.1:8000/docs`.
+
 ## Base URL
 
 ```
