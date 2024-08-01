@@ -92,9 +92,6 @@ async def recieve_Orders(ctx:Context,sender:str,newOrders:OrderDetails):
         ctx.logger.info(f"{dish_names[i]} - {item_costs[i]}")
     ctx.logger.info(f"Total Cost: {newOrders.max_price}")
 
-    extraPay=0.05*ctx.storage.get('totalCost') #takes into account, the delivery fee and the handling charges
-    final_bill=ctx.storage.get('totalCost') + extraPay
-
     ctx.storage.set("location",rest_loc)
     ctx.storage.set("orderID",orderID)
     ctx.storage.set("customer_agent",sender)
@@ -102,6 +99,10 @@ async def recieve_Orders(ctx:Context,sender:str,newOrders:OrderDetails):
     ctx.storage.set("restaurant",newOrders.restaurant)
     ctx.storage.set("order",newOrders.order)
     ctx.storage.set("totalCost",newOrders.max_price)
+    
+    extraPay=0.05*ctx.storage.get('totalCost') #takes into account, the delivery fee and the handling charges
+    final_bill=ctx.storage.get('totalCost') + extraPay
+
     ctx.storage.set("final_bill",final_bill)
 
 @acceptOrders.on_query(model=Confirm,replies=AcceptOrder)

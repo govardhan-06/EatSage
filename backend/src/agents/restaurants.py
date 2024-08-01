@@ -44,9 +44,8 @@ class TransactionStatus(Model):
 
 @restaurant.on_message(model=TransactionStatus)
 async def request_bill_payment(ctx: Context,sender:str,TransactionStatus:str):
-    AMOUNT=100
     DENOM="atestfet"
-    await ctx.send(DEL_ADDRESS,PaymentRequest(wallet_address=str(restaurant.wallet.address()), amount=AMOUNT, denom=DENOM))
+    await ctx.send(DEL_ADDRESS,PaymentRequest(wallet_address=str(restaurant.wallet.address()), amount=ctx.storage.get('totalCost'), denom=DENOM))
 
 @restaurant.on_message(model=TransactionInfo)
 async def confirm_transaction(ctx: Context, sender: str, msg: TransactionInfo):
@@ -60,8 +59,9 @@ async def confirm_transaction(ctx: Context, sender: str, msg: TransactionInfo):
         and coin_received["amount"] == f"{msg.amount}{msg.denom}"
     ):
         ctx.logger.info(f"Transaction was successful: {coin_received}")
-
-        await ctx.send(CUST_ADDRESS,TransactionStatus(status="Transaction successfull!! Thank you."))
+ 
+        ctx.storage.set('paymentStatus',f"Received payment from {sender}. Thank You")
+        ctx.storage.set('transaction hash',msg.tx_hash)
         await ctx.send(DEL_ADDRESS,TransactionStatus(status=f"Received payment from {sender}. Thank You"))
 
 if __name__=="__main__":

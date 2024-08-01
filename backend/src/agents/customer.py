@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-from backend.src.protocols.customer_proto import makeOrder,sendOrder,getResConfirm,orderPickupConfirm
+from backend.src.protocols.customer_proto import makeOrder,sendOrder,getResConfirm,orderPickupConfirm,confirmDelivery
 
 load_dotenv()
 
@@ -31,6 +31,7 @@ customer.include(makeOrder,publish_manifest=True)
 customer.include(sendOrder,publish_manifest=True)
 customer.include(getResConfirm,publish_manifest=True)
 customer.include(orderPickupConfirm,publish_manifest=True)
+customer.include(confirmDelivery,publish_manifest=True)
 
 class PaymentRequest(Model):
     wallet_address: str
@@ -48,13 +49,15 @@ class TransactionStatus(Model):
 @customer.on_message(model=PaymentRequest, replies=TransactionInfo)
 async def send_payment(ctx: Context, sender: str, msg: PaymentRequest):
     ctx.logger.info(f"Received payment request from {sender}: {msg}")
+    fund_agent_if_low(customer.wallet.address())
     transaction = ctx.ledger.send_tokens(msg.wallet_address, msg.amount, msg.denom, customer.wallet)
-    
+    ctx.storage.set("transaction hash",transaction.tx_hash)
     await ctx.send(DEL_ADDRESS, TransactionInfo(tx_hash=transaction.tx_hash,amount=msg.amount,denom=msg.denom))
 
 @customer.on_message(model=TransactionStatus)
 async def send_status(ctx: Context, sender: str, msg: TransactionStatus):
     ctx.logger.info(f"Message from {sender}: {msg.status}")
+    ctx.storage.set("transaction status",msg.status)
 
 if __name__=="__main__":
     customer.run()

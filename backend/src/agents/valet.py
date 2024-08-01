@@ -71,6 +71,7 @@ async def send_payment(ctx: Context, sender: str, msg: PaymentRequest):
     ctx.logger.info(f"Received payment request from {sender}: {msg}")
     transaction = ctx.ledger.send_tokens(msg.wallet_address, msg.amount, msg.denom, valet.wallet)
     
+    ctx.storage.set('profit',ctx.storage.get("totalCost")-msg.amount)
     await ctx.send(RES_ADDRESS, TransactionInfo(tx_hash=transaction.tx_hash,amount=msg.amount,denom=msg.denom))
 
 @valet.on_message(model=TransactionStatus)

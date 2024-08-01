@@ -15,6 +15,7 @@ makeOrder=Protocol(name="Make Orders",version="1.0")
 sendOrder=Protocol("Sending the confirmed order to restaurant",version="1.0")
 getResConfirm=Protocol(name="Getting Restaurant Confirmation",version="1.0")
 orderPickupConfirm=Protocol(name="Valet Agent Delivery",version="1.0")
+confirmDelivery=Protocol(name="Confirming whether the valet has delivered or not",version="1.0")
 
 MASTER="agent1qturspnj7cpr2z9axv8pkrlwpqyre63pj2j3e3pewacyq3x3wur57e8czsm"
 
@@ -53,7 +54,10 @@ class Acknowledgment(Model):
     message:str
     final_bill:float
 
- 
+class ValetDelivery(Model):
+    orderID:str
+    delivered:str
+
 DENOM = "atestfet"  #Since we are in dev phase
 
 def agent_location() -> list:
@@ -184,4 +188,8 @@ async def order_pickup(ctx:Context, sender:str, orderPickupMessage:OrderPickupMe
     ctx.storage.set("valet address",sender)
     ctx.storage.set("valet message",orderPickupMessage.message)
 
-    await ctx.send(DEL_ADDRESS,Acknowledgment(message="Order Delivered. Thank You",final_bill=100))
+@confirmDelivery.on_query(model=ValetDelivery,replies=Acknowledgment)
+async def confirm_delivery(ctx:Context,sender:str, valetDelivery:ValetDelivery):
+    if (valetDelivery.delivered=="yes"):
+        ack_message="Ordered delivered. Thank You."
+        await ctx.send(DEL_ADDRESS,Acknowledgment(message=ack_message,final_bill=ctx.storage.get("totalCost")))
