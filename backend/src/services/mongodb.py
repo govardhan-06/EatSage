@@ -2,7 +2,6 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
 import os,sys,json
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from dataclasses import dataclass
 from backend.src.utils.exception import customException
 from backend.src.utils.logger import logging

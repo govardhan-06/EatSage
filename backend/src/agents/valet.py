@@ -5,7 +5,6 @@ from uagents.setup import fund_agent_if_low
 import os,sys
 from dotenv import load_dotenv
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from backend.src.protocols.valet_proto import get_Calls,confirm_Calls
 
 load_dotenv()

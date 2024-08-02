@@ -4,8 +4,6 @@ from uagents.setup import fund_agent_if_low
 
 import os,sys
 from dotenv import load_dotenv
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from backend.src.protocols.restaurant_proto import take_Orders,get_valet,acceptOrders,valet_Message
 
 load_dotenv()

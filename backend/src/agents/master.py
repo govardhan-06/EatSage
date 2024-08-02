@@ -9,8 +9,6 @@ import os,sys
 from datetime import datetime
 from dotenv import load_dotenv
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-
 load_dotenv()
 
 DEL_ADDRESS=os.getenv("DEL_ADDRESS")
