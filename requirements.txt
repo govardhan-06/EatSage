@@ -8,3 +8,4 @@ uagents-ai-engine
 geocoder
 geopy
 fastapi
+uvicorn
