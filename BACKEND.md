@@ -5,6 +5,7 @@
 The EatSage API provides endpoints to manage customer orders, restaurant confirmations, and valet services. This API is designed to interact with customer, restaurant, and valet agents to facilitate food ordering, preparation, and delivery processes.
 
 ### Order for Executing API Routes (for testing purposes)
+
 ```
 /
 /customer
@@ -29,28 +30,32 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
 ## Installation
 
 1. **Clone the Repository:**
+
    ```bash
    git clone https://github.com/your-repo/eatsage.git
    cd eatsage
    ```
 
 2. **Create a virtual environment:**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
    ```
 
 3. **Install dependencies:**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Set up environment variables:**
    Create a `.env` file in the root directory and add the following:
+
    ```dotenv
    MONGO_DB_URI=""
    GROQ_API_KEY=""
-   
+
    # Customer Agent
    CUST_NAME="EatSage_Customer"
    CUST_SEED_PHRASE="customer is the king. Welcome to EatSage!!"
@@ -73,7 +78,11 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
    RES_STORAGE="agent1q2h5xkny4c_data.json"
    ```
 
-## Running the Server
+## Hosted Server
+
+`https://clinical-amity-manifest-d5925019.koyeb.app/`
+
+## Running the Server (local)
 
 To run the FastAPI server, execute the following command:
 
@@ -97,7 +106,7 @@ No authentication is required to access these endpoints.
 
 ### 1. General Endpoints
 
-#### Redirect to Swagger UI
+#### Redirect to Swagger UI (No need to access this route for frontend as this is for testing purpose)
 
 - **URL**: `/`
 - **Method**: `GET`
@@ -106,31 +115,63 @@ No authentication is required to access these endpoints.
 
 ### 2. Customer Endpoints
 
-#### Run Customer Agent
+#### Run Customer Agent : This route triggers the customer agent. Upon accessing this route, customer agent will be get activated.
 
 - **URL**: `/customer`
 - **Method**: `POST`
 - **Description**: Starts the customer agent.
 - **Responses**:
-  - `200 OK`: Customer agent started successfully.
+  - `200 OK`: null
   - `500 Internal Server Error`: Error occurred while starting the customer agent.
 
 #### Send Customer Prompt
 
 - **URL**: `/prompt`
 - **Method**: `POST`
-- **Description**: Sends a prompt to the customer agent.
+- **Description**: Sends the user prompt to the customer agent.
 - **Parameters**:
   - `prompt` (string): The prompt to send to the customer agent.
 - **Responses**:
   - `200 OK`: Returns the restaurant and dishes from the customer agent.
   - `500 Internal Server Error`: Error occurred while sending the prompt.
+- **Sample Prompt**
+  - `I want to eat some italian dishes`
+- **Sample Response**
+
+```
+  {
+  "message": "Success",
+  "restauarant": "Bistro Bliss",
+  "dishes": [
+    {
+      "itemname": "Bruschetta",
+      "description": "Grilled bread topped with fresh tomatoes and basil",
+      "itemcost": 332
+    },
+    {
+      "itemname": "Chicken Alfredo Pasta",
+      "description": "Fettuccine pasta tossed in a creamy Alfredo sauce with grilled chicken",
+      "itemcost": 196
+    },
+    {
+      "itemname": "Tiramisu",
+      "description": "Layered dessert with coffee-soaked ladyfingers and mascarpone cheese",
+      "itemcost": 203
+    },
+    {
+      "itemname": "Cappuccino",
+      "description": "Espresso with steamed milk and foam",
+      "itemcost": 596
+    }
+  ]
+}
+```
 
 #### Confirm Customer Order
 
 - **URL**: `/confirmOrder`
 - **Method**: `POST`
-- **Description**: Confirms an order with the customer agent.
+- **Description**: Confirms an order sent by the customer agent. Once submitted, this will be sent to the restaurant agent.
 - **Parameters**:
   - `req` (boolean): Confirmation status.
 - **Responses**:
@@ -141,10 +182,20 @@ No authentication is required to access these endpoints.
 
 - **URL**: `/resConfirm`
 - **Method**: `POST`
-- **Description**: Gets confirmation message from the restaurant agent.
+- **Description**: Gets confirmation message from the restaurant agent whether the order is accepted or not.
 - **Responses**:
   - `200 OK`: Returns order details including order ID, status, total cost, and message.
   - `500 Internal Server Error`: Error occurred while fetching the confirmation message.
+- **Sample Response**
+
+```
+{
+  "message": "Thank you for choosing Bistro Bliss. Your order will be delivered soon...",
+  "orderID": "9b9fef4c-e3b0-4f2b-a2a7-ce415dd9975d",
+  "status": true,
+  "totalCost": 1393.35
+}
+```
 
 #### Valet Message
 
@@ -154,6 +205,15 @@ No authentication is required to access these endpoints.
 - **Responses**:
   - `200 OK`: Returns valet address and message.
   - `500 Internal Server Error`: Error occurred while reading the valet message.
+- **Sample Response**
+
+```
+{
+  "message": "Success",
+  "valet address": "agent1q2h5xkny4c9kmde7c7hy3394y708us338j55a5y0yfk3t3udwqrxk4zp73s",
+  "valet message": "Valet Agent agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx picked up the order and will be delivering it soon..."
+}
+```
 
 #### Confirm Order Delivery
 
@@ -194,6 +254,38 @@ No authentication is required to access these endpoints.
 - **Responses**:
   - `200 OK`: Returns current orders.
   - `500 Internal Server Error`: Error occurred while fetching current orders.
+- **Sample Response**
+
+```
+{
+  "message": "Success",
+  "orderID": "9b9fef4c-e3b0-4f2b-a2a7-ce415dd9975d",
+  "customer_agent": "agent1q0k2rwfj5up9s7z8896pyrchzqawdywcj4ua4vwhfdky0fstvvjtqu3f9kw",
+  "order": [
+    {
+      "itemname": "Bruschetta",
+      "description": "Grilled bread topped with fresh tomatoes and basil",
+      "itemcost": 332
+    },
+    {
+      "itemname": "Chicken Alfredo Pasta",
+      "description": "Fettuccine pasta tossed in a creamy Alfredo sauce with grilled chicken",
+      "itemcost": 196
+    },
+    {
+      "itemname": "Tiramisu",
+      "description": "Layered dessert with coffee-soaked ladyfingers and mascarpone cheese",
+      "itemcost": 203
+    },
+    {
+      "itemname": "Cappuccino",
+      "description": "Espresso with steamed milk and foam",
+      "itemcost": 596
+    }
+  ],
+  "totalCost": 1327
+}
+```
 
 #### Accept Order
 
@@ -223,6 +315,19 @@ No authentication is required to access these endpoints.
 - **Responses**:
   - `200 OK`: Returns valet address, message, and location.
   - `500 Internal Server Error`: Error occurred while fetching valet information.
+- **Sample Response**
+
+```
+{
+  "message": "Success",
+  "valet address": "agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx",
+  "valet message": "Received your delivery call. My current location: [50.1155, 8.6842]. Picking up the order in few minutes...",
+  "valet location": [
+    50.1155,
+    8.6842
+  ]
+}
+```
 
 #### Status of Food Payment
 
@@ -252,6 +357,23 @@ No authentication is required to access these endpoints.
 - **Responses**:
   - `200 OK`: Returns current call details.
   - `500 Internal Server Error`: Error occurred while fetching current call details.
+- **Sample Response**
+
+```
+{
+  "message": "Order will be getting ready in few minutes...",
+  "orderID": "9b9fef4c-e3b0-4f2b-a2a7-ce415dd9975d",
+  "userloc": [
+    50.1155,
+    8.6842
+  ],
+  "restaurantloc": [
+    50.1155,
+    8.6842
+  ],
+  "totalCost": 1393.35
+}
+```
 
 #### Confirm Delivery Call
 
