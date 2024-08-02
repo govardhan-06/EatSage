@@ -113,7 +113,7 @@ async def cust_confirmation(req:bool):
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/resConfirm")
+@app.get("/resConfirm")
 async def res_confirmation():
     '''
     For Customer
@@ -134,7 +134,7 @@ async def res_confirmation():
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/valetMessage")
+@app.get("/valetMessage")
 async def valet_msg_read():
     '''
     For Customer
@@ -174,7 +174,7 @@ async def confirm_order_delivery(req:bool):
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/transactionStatus")
+@app.get("/transactionStatus")
 async def transaction_status():
     '''
     For Customer
@@ -194,7 +194,7 @@ async def transaction_status():
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/currentOrders")
+@app.get("/currentOrders")
 async def get_current_orders():
     '''
     For Restaurant
@@ -244,7 +244,7 @@ async def accept_order():
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/getValet")
+@app.get("/getValet")
 async def get_valet():
     '''
     For Restaurant
@@ -265,7 +265,7 @@ async def get_valet():
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/statusFoodPayment")
+@app.get("/statusFoodPayment")
 async def status_food_payment():
     '''
     For Restaurant
@@ -287,7 +287,7 @@ async def status_food_payment():
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/currentCall")
+@app.get("/currentCall")
 async def get_current_call():
     '''
     For Valet
@@ -322,7 +322,7 @@ async def confirmCall(req:bool):
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
 
-@app.post("/statusPayment")
+@app.get("/statusPayment")
 async def get_payment():
     '''
     For Valet

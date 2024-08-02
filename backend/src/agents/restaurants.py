@@ -42,12 +42,12 @@ class TransactionInfo(Model):
 class TransactionStatus(Model):
     status:str
 
-@restaurant.on_message(model=TransactionStatus)
+@restaurant.on_message(model=TransactionStatus,replies=PaymentRequest)
 async def request_bill_payment(ctx: Context,sender:str,TransactionStatus:str):
     DENOM="atestfet"
     await ctx.send(DEL_ADDRESS,PaymentRequest(wallet_address=str(restaurant.wallet.address()), amount=ctx.storage.get('totalCost'), denom=DENOM))
 
-@restaurant.on_message(model=TransactionInfo)
+@restaurant.on_message(model=TransactionInfo,replies=TransactionStatus)
 async def confirm_transaction(ctx: Context, sender: str, msg: TransactionInfo):
     ctx.logger.info(f"Received transaction info from {sender}: {msg}")
  
