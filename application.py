@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 import sys,uvicorn,os,json
 from starlette.responses import JSONResponse
 import subprocess
 from dotenv import load_dotenv
 from uagents.query import query
 from uagents import Model
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from backend.src.utils.exception import customException
 from backend.src.utils.logger import logging
 
@@ -35,6 +34,15 @@ class ValetDelivery(Model):
     delivered:str
 
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def home():

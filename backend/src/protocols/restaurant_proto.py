@@ -3,7 +3,6 @@ from datetime import datetime
 import os,sys,uuid,geocoder
 from geopy.distance import geodesic
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from backend.src.utils.exception import customException
 
 DEL_ADDRESS=os.getenv("DEL_ADDRESS")

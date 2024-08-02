@@ -9,3 +9,4 @@ geocoder
 geopy
 fastapi
 uvicorn
+-e .

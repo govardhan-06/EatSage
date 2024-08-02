@@ -1,7 +1,6 @@
 from uagents import Context, Model, Protocol
 import os,sys,geocoder
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from backend.src.utils.exception import customException
 
 CUST_ADDRESS=os.getenv("CUST_ADDRESS")
