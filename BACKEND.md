@@ -25,6 +25,7 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
 /transactionStatus
 /statusFoodPayment
 /statusPayment
+/clearStorage
 ```
 
 ## Installation
