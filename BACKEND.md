@@ -81,7 +81,7 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
 
 ## Hosted Server
 
-`[https://eatsage-backend.onrender.com](https://eatsage-backend.onrender.com)`
+[https://eatsage-backend.onrender.com](https://eatsage-backend.onrender.com)
 
 ## Running the Server (local)
 
