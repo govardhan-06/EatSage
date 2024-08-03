@@ -113,6 +113,14 @@ No authentication is required to access these endpoints.
 - **Description**: Redirects to the Swagger UI page.
 - **Response**: Redirects to `/docs`.
 
+#### Clear the agent storage
+
+- **URL**: `/clearStorage`
+- **Method**: `POST`
+- **Description**: The storage for all the three agents will be cleared.
+- **Response**: null
+- **Note**: To be executed after the entire order-delivery cycle
+
 ### 2. Customer Endpoints
 
 #### Run Customer Agent : This route triggers the customer agent. Upon accessing this route, customer agent will be get activated.
