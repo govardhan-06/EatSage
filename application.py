@@ -357,6 +357,22 @@ async def get_payment():
     except customException as e:
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
+
+@app.post("/clearStorage")
+def clear_agent_storage():
+    '''
+    This is used to clear the agent storage after the execution of the entire cycle
+    '''
+    try:
+        l=["agent1q0k2rwfj5u_data.json","agent1q2h5xkny4c_data.json","agent1qgu230r5w7_data.json"]
+        for file_path in l:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                print(f"{file_path} has been deleted successfully.")
+
+    except Exception as e:
+        print(f"An error occurred while deleting the file: {e}")
+
     
 if __name__=="__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
