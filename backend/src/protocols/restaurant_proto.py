@@ -1,5 +1,4 @@
 from uagents import Context, Model, Protocol
-from datetime import datetime
 import os,sys,uuid,geocoder
 from geopy.distance import geodesic
 

@@ -177,11 +177,12 @@ No authentication is required to access these endpoints.
 - **Responses**:
   - `200 OK`: Order confirmed.
   - `500 Internal Server Error`: Error occurred while confirming the order.
+- **Note**: If the user denies the order suggested by the customer agent, then the prompt route must be initiated once again using the prompt given by the user.
 
 #### Restaurant Confirmation Message
 
 - **URL**: `/resConfirm`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Gets confirmation message from the restaurant agent whether the order is accepted or not.
 - **Responses**:
   - `200 OK`: Returns order details including order ID, status, total cost, and message.
@@ -200,7 +201,7 @@ No authentication is required to access these endpoints.
 #### Valet Message
 
 - **URL**: `/valetMessage`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Reads the valet message.
 - **Responses**:
   - `200 OK`: Returns valet address and message.
@@ -229,7 +230,7 @@ No authentication is required to access these endpoints.
 #### Transaction Status
 
 - **URL**: `/transactionStatus`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Checks the transaction status.
 - **Responses**:
   - `200 OK`: Returns the transaction status.
@@ -249,7 +250,7 @@ No authentication is required to access these endpoints.
 #### Get Current Orders
 
 - **URL**: `/currentOrders`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Gets the current orders from the customer agent.
 - **Responses**:
   - `200 OK`: Returns current orders.
@@ -297,6 +298,7 @@ No authentication is required to access these endpoints.
 - **Responses**:
   - `200 OK`: Order accepted.
   - `500 Internal Server Error`: Error occurred while accepting the order.
+- **Note**: If the restaurant denies the order sent by the customer agent, then the prompt route must be initiated once again using the prompt given by the user. User must be informed about this order denial by the restaurant. The restaurant message can be accessed using the `/resConfirm` route
 
 #### Call Valet
 
@@ -310,7 +312,7 @@ No authentication is required to access these endpoints.
 #### Get Valet Information
 
 - **URL**: `/getValet`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Gets the valet agent's information.
 - **Responses**:
   - `200 OK`: Returns valet address, message, and location.
@@ -332,11 +334,23 @@ No authentication is required to access these endpoints.
 #### Status of Food Payment
 
 - **URL**: `/statusFoodPayment`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Gets the status of food payment.
 - **Responses**:
   - `200 OK`: Returns food payment status.
   - `500 Internal Server Error`: Error occurred while checking food payment status.
+- **Sample Response**
+
+```
+{
+  "message": "Success",
+  "orderID": "78c58ddd-0ed3-46a7-89cb-08020b596f57",
+  "customer_agent": "agent1q0k2rwfj5up9s7z8896pyrchzqawdywcj4ua4vwhfdky0fstvvjtqu3f9kw",
+  "valet address": "agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx",
+  "paymentStatus": "Received payment from agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx. Thank You",
+  "transaction hash": "BDB29E8851A2AE9F8C510FDFFBF28DC551B55A3629DD25A41361F40D5014E5AE"
+}
+```
 
 ### 4. Valet Endpoints
 
@@ -352,7 +366,7 @@ No authentication is required to access these endpoints.
 #### Get Current Call
 
 - **URL**: `/currentCall`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Gets the current call from the restaurant agent.
 - **Responses**:
   - `200 OK`: Returns current call details.
@@ -385,15 +399,25 @@ No authentication is required to access these endpoints.
 - **Responses**:
   - `200 OK`: Delivery call accepted.
   - `500 Internal Server Error`: Error occurred while accepting the delivery call.
+- **Note**: If the valet denies the delivery call sent by the restaurant agent, then the `/callValet` route must be initiated once again and this will reassign the valet. This feature will be useful in the future updates wherein multiple valet agents will be available.
 
 #### Status of Payment
 
 - **URL**: `/statusPayment`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Confirms payment from the restaurant, marking the end of the delivery.
 - **Responses**:
   - `200 OK`: Returns payment status.
   - `500 Internal Server Error`: Error occurred while confirming payment.
+- **Sample Response**
+
+```
+{
+  "message": "Success",
+  "orderID": "78c58ddd-0ed3-46a7-89cb-08020b596f57",
+  "profit": 66.34999999999991
+}
+```
 
 ## Error Handling
 
@@ -405,7 +429,7 @@ All error responses will be in the following format:
 }
 ```
 
-## Usage
+## Usage (local)
 
 To test the API, you can use tools like Postman or cURL. Make sure to follow the parameter requirements for each endpoint. For example, to run the customer agent, you can send a POST request to `/customer` using Postman or:
 

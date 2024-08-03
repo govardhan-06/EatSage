@@ -115,7 +115,7 @@ async def cust_confirmation(req:bool):
             return JSONResponse(content={"message": "Order Confirmed"}, status_code=200)
         
         else:
-            return JSONResponse(content={"message": "Your order will be delivered soon..."}, status_code=200)
+            return JSONResponse(content={"message": "Sorry!! lets do it once again..."}, status_code=200)
 
     except customException as e:
         logging.error(e)
@@ -170,14 +170,16 @@ async def confirm_order_delivery(req:bool):
     This function is acknowledge order delivery and raise the Payment.
     '''
     try:
-        with open(CUST_STORAGE, 'r') as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError as e:
-                raise customException(f"Error reading JSON file: {str(e)}", sys)
-        await query(destination=CUST_ADDRESS, message=ValetDelivery(orderID=data['orderID'],delivered="yes"), timeout=3000.0)
-        return JSONResponse(content={"message": "Hurray!! Your order has been delivered"}, status_code=200)
-
+        if(req):
+            with open(CUST_STORAGE, 'r') as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError as e:
+                    raise customException(f"Error reading JSON file: {str(e)}", sys)
+            await query(destination=CUST_ADDRESS, message=ValetDelivery(orderID=data['orderID'],delivered="yes"), timeout=20.0)
+            return JSONResponse(content={"message": "Hurray!! Your order has been delivered"}, status_code=200)
+        else:
+            return JSONResponse(content={"message": "Your order will be delivered soon..."}, status_code=200)
     except customException as e:
         logging.error(e)
         return JSONResponse(content={"error": {e}}, status_code=500)
@@ -230,13 +232,16 @@ async def accept_order(req:bool):
     For Restaurant
     This function is used to accept an order from the customer agent.
     '''
-    try:
-        await query(destination=RES_ADDRESS, message=Confirm(confirm=req), timeout=15.0)
-        return JSONResponse(content={"message": "Order Accepted"}, status_code=200)
+    if(req):
+        try:
+            await query(destination=RES_ADDRESS, message=Confirm(confirm=req), timeout=15.0)
+            return JSONResponse(content={"message": "Order Accepted"}, status_code=200)
 
-    except customException as e:
-        logging.error(e)
-        return JSONResponse(content={"error": {e}}, status_code=500)
+        except customException as e:
+            logging.error(e)
+            return JSONResponse(content={"error": {e}}, status_code=500)
+    else:
+        return JSONResponse(content={"message": "Currently we are not accepting any orders"}, status_code=200)
 
 @app.post("/callValet")
 async def accept_order():
@@ -322,13 +327,16 @@ async def confirmCall(req:bool):
     For Valet
     This function is used to accept a delivery call from the restaurant agent.
     '''
-    try:
-        await query(destination=DEL_ADDRESS, message=Confirm(confirm=req), timeout=15.0)
-        return JSONResponse(content={"message": "Delivery Call Accepted"}, status_code=200)
+    if(req):
+        try:
+            await query(destination=DEL_ADDRESS, message=Confirm(confirm=req), timeout=15.0)
+            return JSONResponse(content={"message": "Delivery Call Accepted"}, status_code=200)
 
-    except customException as e:
-        logging.error(e)
-        return JSONResponse(content={"error": {e}}, status_code=500)
+        except customException as e:
+            logging.error(e)
+            return JSONResponse(content={"error": {e}}, status_code=500)
+    else:
+        return JSONResponse(content={"message": "Delivery Call Rejected"}, status_code=200)
 
 @app.get("/statusPayment")
 async def get_payment():
