@@ -156,7 +156,7 @@ async def make_Order(ctx:Context,sender:str,p:UserPrompt):
     ctx.storage.set("location",current_loc)
     ctx.storage.set("restaurant",restaurant)
     ctx.storage.set("dishes",dishes)
-    ctx.storage.set("time",str(datetime.now()))
+    ctx.storage.set("time",datetime.now().isoformat())
     ctx.storage.set("max_price",max_price)
 
 @sendOrder.on_query(model=Confirm,replies=OrderDetails)
