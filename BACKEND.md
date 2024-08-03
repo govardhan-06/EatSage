@@ -81,7 +81,7 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
 
 ## Hosted Server
 
-`https://clinical-amity-manifest-d5925019.koyeb.app/`
+`[https://clinical-amity-manifest-d5925019.koyeb.app/](https://eatsage-backend.onrender.com)`
 
 ## Running the Server (local)
 
