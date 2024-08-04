@@ -1,3 +1,4 @@
+import 'package:eatsage_frontend/globals.dart';
 import 'package:eatsage_frontend/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   final String baseUrl = 'eatsage-backend.onrender.com';
   bool _isLoading = false; // To track loading state
   String _lastInputText = ''; // To store the last user input
+  int restflag = 1; // Assume restflag is initialized to 1 for demonstration
 
   @override
   void initState() {
@@ -184,7 +186,36 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         // Successfully confirmed the order
-        print("order confirmed");
+        print("Order confirmed");
+
+        if (restflag == 1) {
+          // Fetch the confirmation message from the restaurant agent
+          var resConfirmUrl = Uri.https(baseUrl, '/resConfirm');
+
+          try {
+            final resConfirmResponse = await http.get(resConfirmUrl);
+
+            if (resConfirmResponse.statusCode == 200) {
+              final responseData = jsonDecode(resConfirmResponse.body);
+              final formattedResponse = 'Message: ${responseData['message']}\n'
+                  'Order ID: ${responseData['orderID']}\n'
+                  'Status: ${responseData['status'] ? 'Accepted' : 'Rejected'}\n'
+                  'Total Cost: \$${responseData['totalCost']}';
+
+              _messages.add({
+                'text': formattedResponse,
+                'isUser': false,
+              });
+              _messagesController.add(List.from(_messages)); // Update stream
+            } else {
+              print(
+                  'Failed to fetch confirmation message. Status code: ${resConfirmResponse.statusCode}');
+              print('Response body: ${resConfirmResponse.body}');
+            }
+          } catch (e) {
+            print('Error: $e');
+          }
+        }
       } else {
         print('Failed to confirm order. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -267,6 +298,7 @@ class _HomePageState extends State<HomePage> {
                       final message = snapshot.data![index];
                       final isUserMessage = message['isUser'] ?? false;
                       final showButtons = message['showButtons'] ?? false;
+
                       return Column(
                         crossAxisAlignment: isUserMessage
                             ? CrossAxisAlignment.end
@@ -286,30 +318,38 @@ class _HomePageState extends State<HomePage> {
                                   : const Color.fromARGB(255, 23, 23, 23),
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            child: Text(
-                              message['text'],
-                              style: TextStyle(
-                                  color: Colors.white, fontFamily: 'Poppins'),
-                            ),
-                          ),
-                          if (showButtons)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IconButton(
-                                  icon: Icon(Icons.check_box),
-                                  color: Colors.green,
-                                  iconSize: 36,
-                                  onPressed: accepted,
+                                Text(
+                                  message['text'],
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins'),
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.close_rounded),
-                                  color: Colors.red,
-                                  iconSize: 36,
-                                  onPressed: rejection,
-                                ),
+                                if (showButtons)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.check_circle,
+                                          color: Colors.green,
+                                        ),
+                                        onPressed: accepted,
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.cancel,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: rejection,
+                                      ),
+                                    ],
+                                  ),
                               ],
                             ),
+                          ),
                         ],
                       );
                     },

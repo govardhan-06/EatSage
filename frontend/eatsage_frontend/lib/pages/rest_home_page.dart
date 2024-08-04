@@ -1,3 +1,4 @@
+import 'package:eatsage_frontend/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -60,7 +61,7 @@ class _RestHomePageState extends State<RestHomePage> {
       '/acceptOrder',
       {
         'orderID': orderID,
-        'req': 'true', // Send req as a query parameter
+        'req': 'true',
       },
     );
 
@@ -70,15 +71,17 @@ class _RestHomePageState extends State<RestHomePage> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({}), // Empty body as query parameters are used
+        body: jsonEncode({}),
       );
 
       if (response.statusCode == 200) {
         print('Order accepted');
         _fetchCurrentOrders(); // Refresh the orders after acceptance
+        restflag = 1;
       } else {
         print('Failed to accept order. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
+        restflag = 0;
       }
     } catch (e) {
       print('Error: $e');
