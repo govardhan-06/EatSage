@@ -19,7 +19,14 @@ class myButton extends StatelessWidget {
         ),
         padding: EdgeInsets.all(12),
         margin: const EdgeInsets.symmetric(horizontal: 100),
-        child: Center(child: Text(text)),
+        child: Center(
+            child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.pink,
+            fontFamily: 'Poppins',
+          ),
+        )),
       ),
     );
   }

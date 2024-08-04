@@ -23,7 +23,10 @@ class MyTextfield extends StatelessWidget {
         obscureText: obsecure,
         controller: controller,
         focusNode: focusNode,
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(
+          color: Colors.black,
+          fontFamily: 'Poppins',
+        ),
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,

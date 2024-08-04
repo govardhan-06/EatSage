@@ -58,7 +58,7 @@ class LoginPage extends StatelessWidget {
                     const Text(
                       "Eating made easier.",
                       style: TextStyle(
-                        fontFamily: 'San Francisco',
+                        fontFamily: 'Poppins',
                         fontWeight: FontWeight.normal,
                         fontSize: 24,
                         color: Color.fromARGB(255, 255, 255, 255),
@@ -96,7 +96,7 @@ class LoginPage extends StatelessWidget {
                         Text(
                           "Not a member? ",
                           style: TextStyle(
-                            fontFamily: 'San Francisco',
+                            fontFamily: 'Poppins',
                             fontWeight: FontWeight.normal,
                             fontSize: 12,
                             color: const Color.fromARGB(255, 255, 255, 255),
@@ -107,7 +107,7 @@ class LoginPage extends StatelessWidget {
                           child: Text(
                             "Register Now",
                             style: TextStyle(
-                              fontFamily: 'San Francisco',
+                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                               color: const Color.fromARGB(255, 0, 0, 0),
@@ -140,7 +140,10 @@ class LoginPage extends StatelessWidget {
                   },
                   child: Text(
                     "VALET",
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
                 ),
                 SizedBox(width: 8),
@@ -158,7 +161,10 @@ class LoginPage extends StatelessWidget {
                     },
                     child: Text(
                       "RESTAURANT",
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Poppins',
+                      ),
                     )),
               ],
             ),
