@@ -23,7 +23,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    initAgents();
   }
 
   Future<void> initAgents() async {
@@ -54,6 +53,8 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _isLoading = true; // Show loading indicator
       });
+
+      await initAgents();
 
       _lastInputText = text; // Store the last user input
 
@@ -207,6 +208,22 @@ class _HomePageState extends State<HomePage> {
                 'isUser': false,
               });
               _messagesController.add(List.from(_messages)); // Update stream
+              if (valetMsgFlag == 1) {
+                var valetmsgUrl = Uri.https(baseUrl, '/valetMessage');
+                final valetmsgResponse = await http.get(valetmsgUrl);
+
+                if (valetmsgResponse.statusCode == 200) {
+                  final valetMsgData = jsonDecode(valetmsgResponse.body);
+                  final valetMsgFormatted =
+                      'Message: ${responseData['message']}\n'
+                      'Valet Address: ${responseData['valet address']}\n'
+                      'Valet Message: ${responseData['valet message']}';
+                  _messages.add({
+                    'text': valetMsgFormatted,
+                    'isUser': false,
+                  });
+                }
+              }
             } else {
               print(
                   'Failed to fetch confirmation message. Status code: ${resConfirmResponse.statusCode}');
@@ -224,7 +241,8 @@ class _HomePageState extends State<HomePage> {
       print('Error: $e');
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading indicator
+        _isLoading = false;
+        restflag = 0;
       });
     }
   }
