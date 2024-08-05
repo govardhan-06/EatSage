@@ -16,6 +16,7 @@ class _ValetHomePageState extends State<ValetHomePage> {
   Map<String, dynamic>? callDetails;
   bool isLoading = false;
   final String baseUrl = "eatsage-backend.onrender.com";
+  Map<String, dynamic>? _valetPaymentData;
 
   void valetAccept() async {
     var callConfirmUrl = Uri.https(baseUrl, '/confirmCall', {'req': 'true'});
@@ -26,17 +27,43 @@ class _ValetHomePageState extends State<ValetHomePage> {
       },
       body: jsonEncode({}),
     );
+
     if (response.statusCode == 200) {
       print("Valet Accepted the order");
-      getValetFlag = 1;
-      print("Valet found");
-      valetcallFlag = 0;
-      valetMsgFlag = 1;
-    } else {}
+      setState(() {
+        getValetFlag = 1;
+        valetcallFlag = 0;
+        valetMsgFlag = 1;
+      });
+      if (restpayflag == 1) {
+        var valetPayUrl = Uri.http(baseUrl, '/statusPayment');
+        try {
+          final valetDataresponse = await http.get(valetPayUrl);
+
+          if (valetDataresponse.statusCode == 200) {
+            setState(() {
+              _valetPaymentData = jsonDecode(valetDataresponse.body);
+            });
+          } else {
+            print(
+                'Failed to fetch valet information. Status code: ${valetDataresponse.statusCode}');
+            print('Response body: ${valetDataresponse.body}');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+    } else {
+      print("Failed to accept the order. Status code: ${response.statusCode}");
+      // Optionally show a message to the user here
+    }
   }
 
   void valetDecline() async {
-    valetcallFlag = 1;
+    setState(() {
+      valetcallFlag = 0;
+    });
+    print("Valet Declined the order");
   }
 
   Future<void> fetchCurrentCall() async {
@@ -53,14 +80,14 @@ class _ValetHomePageState extends State<ValetHomePage> {
           isLoading = false;
         });
       } else {
-        // Handle the error here
         setState(() {
           isLoading = false;
         });
-        // You can show a SnackBar or AlertDialog here
+        // Handle the error here, e.g., show a SnackBar or AlertDialog
+        print(
+            "Failed to fetch current call. Status code: ${response.statusCode}");
       }
     }
-    valetcallFlag = 0;
   }
 
   @override
@@ -84,14 +111,14 @@ class _ValetHomePageState extends State<ValetHomePage> {
           centerTitle: true,
           backgroundColor: const Color.fromARGB(255, 201, 67, 100),
           shadowColor: Colors.white,
-          title: Text(
+          title: const Text(
             "Valet Home",
             style: TextStyle(color: Colors.white),
           ),
           actions: [
             IconButton(
               onPressed: logout,
-              icon: Icon(
+              icon: const Icon(
                 Icons.logout,
                 color: Colors.white,
               ),
@@ -100,67 +127,109 @@ class _ValetHomePageState extends State<ValetHomePage> {
         ),
         drawer: MyDrawer(), // Using the MyDrawer widget here
         body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : callDetails == null
-                ? Center(child: Text("No current call available"))
-                : Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Message: ${callDetails!['message']}",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Order ID: ${callDetails!['orderID']}",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "User Location: ${callDetails!['userloc'].join(', ')}",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Restaurant Location: ${callDetails!['restaurantloc'].join(', ')}",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Total Cost: \$${callDetails!['totalCost']}",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ElevatedButton(
-                              onPressed: valetAccept,
-                              style: ElevatedButton.styleFrom(
-                                iconColor: Colors.green,
-                              ),
-                              child: Text(
-                                "Accept",
-                                style: TextStyle(color: Colors.green),
-                              ),
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    callDetails == null
+                        ? const Center(child: Text("No current call available"))
+                        : Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Message: ${callDetails!['message']}",
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "Order ID: ${callDetails!['orderID']}",
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "User Location: ${callDetails!['userloc'].join(', ')}",
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "Restaurant Location: ${callDetails!['restaurantloc'].join(', ')}",
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "Total Cost: \$${callDetails!['totalCost']}",
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: valetAccept,
+                                      style: ElevatedButton.styleFrom(
+                                        iconColor: Colors
+                                            .green, // Button background color
+                                      ),
+                                      child: const Text(
+                                        "Accept",
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: valetDecline,
+                                      style: ElevatedButton.styleFrom(
+                                        iconColor: Colors
+                                            .red, // Button background color
+                                      ),
+                                      child: const Text(
+                                        "Decline",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            ElevatedButton(
-                              onPressed: valetDecline,
-                              style: ElevatedButton.styleFrom(
-                                iconColor: Colors.red,
-                              ),
-                              child: Text(
-                                "Decline",
-                                style: TextStyle(color: Colors.red),
-                              ),
+                          ),
+                    _valetPaymentData == null
+                        ? Container() // Or some placeholder if no payment info
+                        : Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 24),
+                                const Text(
+                                  'Valet Payment Information',
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Message: ${_valetPaymentData!['message']}',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Order ID: ${_valetPaymentData!['orderID']}',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Profit: \$${_valetPaymentData!['profit']}',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                          ),
+                  ],
+                ),
+              ),
       ),
     );
   }

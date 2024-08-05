@@ -18,7 +18,9 @@ class _HomePageState extends State<HomePage> {
   final String baseUrl = 'eatsage-backend.onrender.com';
   bool _isLoading = false; // To track loading state
   String _lastInputText = ''; // To store the last user input
-  int restflag = 1; // Assume restflag is initialized to 1 for demonstration
+  int restflag =
+      1; // Assume restflag is initialized to 1 for demonstration  {  C H E C K   }
+  int displayconfirmMsgFlag = 0;
 
   @override
   void initState() {
@@ -43,9 +45,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> send() async {
-    final text = _textEditingController.text;
+    var text = _textEditingController.text;
+    text = text.toLowerCase();
 
-    if (text.isNotEmpty) {
+    if (text.isNotEmpty && text != "done") {
       _messages.add({'text': text, 'isUser': true}); // Add user message
       _textEditingController.clear();
       _messagesController.add(List.from(_messages)); // Update stream
@@ -105,6 +108,31 @@ class _HomePageState extends State<HomePage> {
           _isLoading = false; // Hide loading indicator
         });
         print('Error: $e');
+      }
+    } else {
+      //call the final paripadiess
+      var confDelUrl = Uri.https(baseUrl, '/confirmDelivery', {'req': 'true'});
+      final resp = await http.post(confDelUrl);
+      confdelflag = 1;
+      if (resp.statusCode == 200) {
+        _messages.add({
+          'text': "Delivery Confirmed, payment initiated.",
+          'isUser': false,
+          'showButtons': true
+        });
+        _messagesController.add(List.from(_messages));
+      } else {
+        _messages.add({
+          'text': "Some issue with payment",
+          'isUser': false,
+          'showButtons': true
+        });
+        _messagesController.add(List.from(_messages));
+      }
+      if (confdelflag == 1) {
+        var transtatusUrl = Uri.https(baseUrl, '/transactionStatus');
+        final response = await http.get(transtatusUrl);
+        transflag = 1;
       }
     }
   }
@@ -201,11 +229,13 @@ class _HomePageState extends State<HomePage> {
               final formattedResponse = 'Message: ${responseData['message']}\n'
                   'Order ID: ${responseData['orderID']}\n'
                   'Status: ${responseData['status'] ? 'Accepted' : 'Rejected'}\n'
-                  'Total Cost: \$${responseData['totalCost']}';
+                  'Total Cost: ${responseData['totalCost']}';
 
               _messages.add({
-                'text': formattedResponse,
+                'text': formattedResponse +
+                    "\n Type in 'DONE' in the text field when your order is delivered",
                 'isUser': false,
+                'showButtons': false,
               });
               _messagesController.add(List.from(_messages)); // Update stream
               if (valetMsgFlag == 1) {
@@ -215,15 +245,17 @@ class _HomePageState extends State<HomePage> {
                 if (valetmsgResponse.statusCode == 200) {
                   final valetMsgData = jsonDecode(valetmsgResponse.body);
                   final valetMsgFormatted =
-                      'Message: ${responseData['message']}\n'
-                      'Valet Address: ${responseData['valet address']}\n'
-                      'Valet Message: ${responseData['valet message']}';
+                      'Message: ${valetMsgData['message']}\n'
+                      'Valet Address: ${valetMsgData['valet address']}\n'
+                      'Valet Message: ${valetMsgData['valet message']}';
                   _messages.add({
                     'text': valetMsgFormatted,
                     'isUser': false,
                   });
+                  _messagesController.add(List.from(_messages));
                 }
               }
+              valetMsgFlag = 0;
             } else {
               print(
                   'Failed to fetch confirmation message. Status code: ${resConfirmResponse.statusCode}');

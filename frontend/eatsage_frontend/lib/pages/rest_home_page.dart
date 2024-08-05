@@ -1,4 +1,5 @@
 import 'package:eatsage_frontend/globals.dart';
+import 'package:eatsage_frontend/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -13,8 +14,10 @@ class _RestHomePageState extends State<RestHomePage> {
   bool _isLoading = false;
   Map<String, dynamic>? _orderData;
   Map<String, dynamic>? _valetData;
+  Map<String, dynamic>? _paymentData;
   final String baseUrl = 'eatsage-backend.onrender.com';
   Timer? _pollingTimer;
+  final _auth = AuthService();
 
   @override
   void initState() {
@@ -49,6 +52,36 @@ class _RestHomePageState extends State<RestHomePage> {
       print('Error: $e');
     } finally {
       setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _displayfoodpaymentinfo() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    var foodPaymentUrl = Uri.https(baseUrl, '/statusFoodPayment');
+
+    try {
+      final fpresponse = await http.get(foodPaymentUrl);
+
+      if (fpresponse.statusCode == 200) {
+        setState(() {
+          _paymentData = jsonDecode(fpresponse.body);
+        });
+      } else {
+        print(
+            'Failed to fetch valet information. Status code: ${fpresponse.statusCode}');
+        print('Response body: ${fpresponse.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      setState(() {
+        transflag = 0;
+        restpayflag = 1;
         _isLoading = false;
       });
     }
@@ -116,6 +149,9 @@ class _RestHomePageState extends State<RestHomePage> {
         print("Valet Called Successfully");
         if (getValetFlag == 1) {
           _fetchValetInfo(); // Fetch valet info after calling valet
+        }
+        if (transflag == 1) {
+          _displayfoodpaymentinfo();
         }
       } else {
         print('Failed to accept order. Status code: ${response.statusCode}');
@@ -197,7 +233,7 @@ class _RestHomePageState extends State<RestHomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              // Implement logout functionality here
+              _auth.singOut();
             },
             icon: Icon(
               Icons.logout,
@@ -208,99 +244,111 @@ class _RestHomePageState extends State<RestHomePage> {
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Display Current Orders
-                _orderData == null
-                    ? Center(child: Text('No orders available'))
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Current Orders',
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 16),
-                            Text('Message: ${_orderData!['message']}'),
-                            Text('Order ID: ${_orderData!['orderID']}'),
-                            Text(
-                                'Customer Agent: ${_orderData!['customer_agent']}'),
-                            Text('Total Cost: \$${_orderData!['totalCost']}'),
-                            SizedBox(height: 16),
-                            Text('Order Items:',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            ...(_orderData!['order'] as List<dynamic>)
-                                .map((item) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Item: ${item['itemname']}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('Description: ${item['description']}'),
-                                    Text('Cost: \$${item['itemcost']}'),
-                                    SizedBox(height: 8),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                            SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () =>
-                                      _acceptOrder(_orderData!['orderID']),
-                                  style: ElevatedButton.styleFrom(
-                                      iconColor: Colors.green),
-                                  child: Text('Accept Order',
-                                      style: TextStyle(color: Colors.green)),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () =>
-                                      _declineOrder(_orderData!['orderID']),
-                                  style: ElevatedButton.styleFrom(
-                                      iconColor: Colors.red),
-                                  child: Text(
-                                    'Decline Order',
-                                    style: TextStyle(color: Colors.red),
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Display Current Orders
+                  _orderData == null
+                      ? Center(child: Text('No orders available'))
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Current Orders',
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 16),
+                              Text('Message: ${_orderData!['message']}'),
+                              Text('Order ID: ${_orderData!['orderID']}'),
+                              Text(
+                                  'Customer Agent: ${_orderData!['customer_agent']}'),
+                              Text(
+                                  'Valet Address: ${_orderData!['valet address']}'),
+                              Text(
+                                  'Payment Status: ${_orderData!['paymentStatus']}'),
+                              Text(
+                                  'Transaction Hash: ${_orderData!['transaction hash']}'),
+                              SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _acceptOrder(_orderData!['orderID']);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green),
+                                    child: Text('Accept'),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _declineOrder(_orderData!['orderID']);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red),
+                                    child: Text('Decline'),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                // Display Valet Information
-                _valetData == null
-                    ? Container() // Or some placeholder if no valet info
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Valet Information',
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 16),
-                            Text('Message: ${_valetData!['valet message']}'),
-                            Text(
-                                'Valet Address: ${_valetData!['valet address']}'),
-                            Text(
-                                'Valet Location: ${_valetData!['valet location'].join(', ')}'),
-                          ],
+                  // Display Valet Information
+                  _valetData == null
+                      ? Container() // Or some placeholder if no valet info
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Valet Information',
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 16),
+                              Text('Message: ${_valetData!['valet message']}'),
+                              Text(
+                                  'Valet Address: ${_valetData!['valet address']}'),
+                              Text(
+                                  'Valet Location: ${_valetData!['valet location'].join(', ')}'),
+                            ],
+                          ),
                         ),
-                      ),
-              ],
+                  // Display Food Payment Information
+                  _paymentData == null
+                      ? Container() // Or some placeholder if no payment info
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Food Payment Information',
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 16),
+                              Text('Message: ${_paymentData!['message']}'),
+                              Text('Order ID: ${_paymentData!['orderID']}'),
+                              Text(
+                                  'Customer Agent: ${_paymentData!['customer_agent']}'),
+                              Text(
+                                  'Valet Address: ${_paymentData!['valet address']}'),
+                              Text(
+                                  'Payment Status: ${_paymentData!['paymentStatus']}'),
+                              Text(
+                                  'Transaction Hash: ${_paymentData!['transaction hash']}'),
+                            ],
+                          ),
+                        ),
+                ],
+              ),
             ),
     );
   }
