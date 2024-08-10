@@ -14,7 +14,7 @@ The Eatsage app features three AI agents:
 
 ### Customer Agent
 
-The Customer Agent's backend is responsible for sending trigger notifications to the Restaurant Agent when an order is placed. The frontend is a basic chat interface powered by Lama-3.
+The Customer Agent's backend is responsible for sending trigger notifications to the Restaurant Agent when an order is placed. The frontend is a basic chat interface powered by Llama-3.
 
 ### Restaurant Agent
 
@@ -102,7 +102,9 @@ Make sure to keep your API key secure and do not share it publicly.
 
 ## Installation
 
-### To setup the backend server:
+### To setup the backend server
+
+Refer to [Backend Docs](BACKEND.md) for more detailed info.
 
 1. Clone the repository:
 
