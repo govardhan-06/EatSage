@@ -41,7 +41,7 @@ Currently, the [backend fastapi server](https://eatsage-backend.onrender.com/) i
 
 ## Environment Variables
 
-The .env file contains the following environment variables.
+The .env file in the root directory contains the following environment variables.
 _Note:_ The values below are dummy values and should be replaced with actual credentials.
 
 ```sh
@@ -92,11 +92,7 @@ To get the `GROQ_API_KEY` and set it up, follow these steps:
 
 5. **Set the API Key as an Environment Variable:**
 
-   - In your terminal or command prompt, you can set the API key as an environment variable by running:
-     ```bash
-     export GROQ_API_KEY="gsk_abcdef1234567890"
-     ```
-   - Replace `"gsk_abcdef1234567890"` with your actual API key.
+   - Replace `"gsk_dummy_api_key"` with your actual API key in the .env file.
 
 Make sure to keep your API key secure and do not share it publicly.
 
