@@ -29,9 +29,11 @@ The Valet Agent's frontend is a list view of all delivery options, allowing the 
 - The Customer Agent can find nearby restaurants using the device's location.
 - Payments are processed through the Fetch Blockchain using the Almanac smart contract. Users must purchase 'FET' tokens, and payments are made automatically.
 
-### Pitch-deck
+## Pitch Deck
 
-[EatSage-pitchdeck](https://docs.google.com/presentation/d/1QY-O7IDLwvKwFlUQzm85tkdSfjIWLUD9/edit?usp=sharing&ouid=100396215887832693875&rtpof=true&sd=true)
+We've put together a comprehensive [Pitch Deck](https://docs.google.com/presentation/d/1QY-O7IDLwvKwFlUQzm85tkdSfjIWLUD9/edit?usp=sharing&ouid=100396215887832693875&rtpof=true&sd=true) that outlines our project **EatSage** in detail. This deck covers the problem we're solving, our innovative approach using decentralized AI agents, the technology stack, and our roadmap for future development.
+
+Check it out to get a deeper understanding of our vision and the impact we aim to achieve with **EatSage**.
 
 ### Note
 
