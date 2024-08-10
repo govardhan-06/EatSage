@@ -4,7 +4,7 @@
 
 The EatSage API provides endpoints to manage customer orders, restaurant confirmations, and valet services. This API is designed to interact with customer, restaurant, and valet agents to facilitate food ordering, preparation, and delivery processes.
 
-### Order for Executing API Routes (for testing purposes)
+### Order for Executing API Routes (for backend-testing purposes)
 
 ```
 /
@@ -53,31 +53,27 @@ The EatSage API provides endpoints to manage customer orders, restaurant confirm
 4. **Set up environment variables:**
    Create a `.env` file in the root directory and add the following:
 
-   ```dotenv
-   MONGO_DB_URI=""
-   GROQ_API_KEY=""
+```sh
+GROQ_API_KEY="gsk_dummy_api_key"
 
-   # Customer Agent
-   CUST_NAME="EatSage_Customer"
-   CUST_SEED_PHRASE="customer is the king. Welcome to EatSage!!"
-   CUST_ADDRESS="agent1q0k2rwfj5up9s7z8896pyrchzqawdywcj4ua4vwhfdky0fstvvjtqu3f9kw"
-   CUST_MAILBOX="96b28a58-60d4-46df-9de5-66d94d39da4b"
-   CUST_STORAGE="agent1q0k2rwfj5u_data.json"
+# Customer Agent
+CUST_NAME="EatSage_Customer"
+CUST_SEED_PHRASE="customer is the king. Welcome to EatSage!!"
+CUST_ADDRESS="agent1q0k2rwfj5up9s7z8896pyrchzqawdywcj4ua4vwhfdky0fstvvjtqu3f9kw"
+CUST_STORAGE="agent1q0k2rwfj5u_data.json"
 
-   # Delivery Partner Agent
-   DEL_NAME="EatSage_Delivery"
-   DEL_SEED_PHRASE="EatSage delivery partner, committed to customer service"
-   DEL_ADDRESS="agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx"
-   DEL_MAILBOX="c304507f-3f41-42ae-a63e-c0371b708790"
-   DEL_STORAGE="agent1qgu230r5w7_data.json"
+# Delivery Partner Agent
+DEL_NAME="EatSage_Delivery"
+DEL_SEED_PHRASE="EatSage delivery partner, committed to customer service"
+DEL_ADDRESS="agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx"
+DEL_STORAGE="agent1qgu230r5w7_data.json"
 
-   # Restaurant Agent
-   RES_NAME="EatSage_Restaurant"
-   RES_SEED_PHRASE="We are the elite eatsage restaurants!! Food Quality and Customer service is our topmost priority"
-   RES_ADDRESS="agent1q2h5xkny4c9kmde7c7hy3394y708us338j55a5y0yfk3t3udwqrxk4zp73s"
-   RES_MAILBOX="f246b289-9173-4f9c-9f7e-c675cf810e04"
-   RES_STORAGE="agent1q2h5xkny4c_data.json"
-   ```
+# Restaurant Agent
+RES_NAME="EatSage_Restaurant"
+RES_SEED_PHRASE="We are the elite eatsage restaurants!! Food Quality and Customer service is our topmost priority"
+RES_ADDRESS="agent1q2h5xkny4c9kmde7c7hy3394y708us338j55a5y0yfk3t3udwqrxk4zp73s"
+RES_STORAGE="agent1q2h5xkny4c_data.json"
+```
 
 ## Hosted Server
 
