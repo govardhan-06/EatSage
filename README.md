@@ -131,7 +131,7 @@ pip install -r requirements.txt
 
 ### To setup the flutter app:
 
-<flutter app setup>
+Navigate to the frontend directory, open any android emulator or connect your physical device through USB debugging and run the command below.
 
 ## Usage
 
@@ -144,7 +144,7 @@ python backend/src/__init__.py
 2. Start the frontend:
 
 ```sh
-<flutter command to run the app>
+flutter run
 ```
 
 3. Start interacting with the Eatsage app.
