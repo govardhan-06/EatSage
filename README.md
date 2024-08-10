@@ -29,6 +29,14 @@ The Valet Agent's frontend is a list view of all delivery options, allowing the 
 - The Customer Agent can find nearby restaurants using the device's location.
 - Payments are processed through the Fetch Blockchain using the Almanac smart contract. Users must purchase 'FET' tokens, and payments are made automatically.
 
+### Pitch-deck
+
+[EatSage-pitchdeck](https://docs.google.com/presentation/d/1QY-O7IDLwvKwFlUQzm85tkdSfjIWLUD9/edit?usp=sharing&ouid=100396215887832693875&rtpof=true&sd=true)
+
+### Note
+
+Currently, the [backend fastapi server](https://eatsage-backend.onrender.com/) is hosted on render using a free tier account. This may lead to temporary outage of the service and may cause `INTERNAL SERVER ERROR`
+
 ## Environment Variables
 
 The .env file contains the following environment variables.
@@ -39,22 +47,60 @@ GROQ_API_KEY="gsk_dummy_api_key"
 
 # Customer Agent
 CUST_NAME="EatSage_Customer"
-CUST_SEED_PHRASE="<dummy value>"
-CUST_ADDRESS="agent1q0dummyaddress"
-CUST_MAILBOX="7750ebca-3cb0-4c9e-93be-dummy_mailbox"
+CUST_SEED_PHRASE="customer is the king. Welcome to EatSage!!"
+CUST_ADDRESS="agent1q0k2rwfj5up9s7z8896pyrchzqawdywcj4ua4vwhfdky0fstvvjtqu3f9kw"
+CUST_STORAGE="agent1q0k2rwfj5u_data.json"
 
 # Delivery Partner Agent
 DEL_NAME="EatSage_Delivery"
-DEL_SEED_PHRASE="<dummy value>"
-DEL_ADDRESS="agent1qdummyaddress"
+DEL_SEED_PHRASE="EatSage delivery partner, committed to customer service"
+DEL_ADDRESS="agent1qgu230r5w774zhc88ncs8ume2v9hzuf7crfeqn5r4pxmk98jp46wsg2mpdx"
+DEL_STORAGE="agent1qgu230r5w7_data.json"
 
 # Restaurant Agent
 RES_NAME="EatSage_Restaurant"
-RES_SEED_PHRASE="<dummy value>"
-RES_ADDRESS="agent1qdummyaddress"
+RES_SEED_PHRASE="We are the elite eatsage restaurants!! Food Quality and Customer service is our topmost priority"
+RES_ADDRESS="agent1q2h5xkny4c9kmde7c7hy3394y708us338j55a5y0yfk3t3udwqrxk4zp73s"
+RES_STORAGE="agent1q2h5xkny4c_data.json"
 ```
 
+## Guidelines on how to acquire the api keys:
+
+To get the `GROQ_API_KEY` and set it up, follow these steps:
+
+1. **Create or Log into your GROQ Account:**
+
+   - Go to the GROQ platform's official documenation website: [Docs-Groq](https://console.groq.com/docs/quickstart).
+   - Sign up for an account if you don't have one, or log in if you already have an account.
+
+2. **Access API Keys:**
+
+   - Once logged in, navigate to the API section, usually found under the "Settings" or "Developer" section in your account dashboard.
+   - Look for the option to generate a new API key.
+
+3. **Generate the API Key:**
+
+   - Click on the "Generate API Key" button.
+   - Provide a name or description for the key if prompted.
+   - The platform will generate a unique API key, which is your `GROQ_API_KEY`.
+
+4. **Copy the API Key:**
+
+   - Copy the generated API key. It might look something like this: `gsk_abcdef1234567890`.
+
+5. **Set the API Key as an Environment Variable:**
+
+   - In your terminal or command prompt, you can set the API key as an environment variable by running:
+     ```bash
+     export GROQ_API_KEY="gsk_abcdef1234567890"
+     ```
+   - Replace `"gsk_abcdef1234567890"` with your actual API key.
+
+Make sure to keep your API key secure and do not share it publicly.
+
 ## Installation
+
+### To setup the backend server:
 
 1. Clone the repository:
 
@@ -83,6 +129,10 @@ pip install -r requirements.txt
 
 5. Set up your .env file with the appropriate values.
 
+### To setup the flutter app:
+
+<flutter app setup>
+
 ## Usage
 
 1. Start the backend:
@@ -91,7 +141,13 @@ pip install -r requirements.txt
 python backend/src/__init__.py
 ```
 
-2. Access the frontend and start interacting with the Eatsage app.
+2. Start the frontend:
+
+```sh
+<flutter command to run the app>
+```
+
+3. Start interacting with the Eatsage app.
 
 ## License
 
