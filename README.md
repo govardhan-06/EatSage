@@ -94,8 +94,6 @@ To get the `GROQ_API_KEY` and set it up, follow these steps:
 
    - Replace `"gsk_dummy_api_key"` with your actual API key in the .env file.
 
-Make sure to keep your API key secure and do not share it publicly.
-
 ## Installation
 
 ### To setup the backend server
