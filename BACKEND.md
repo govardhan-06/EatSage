@@ -84,7 +84,7 @@ RES_STORAGE="agent1q2h5xkny4c_data.json"
 To run the FastAPI server, execute the following command:
 
 ```bash
-uvicorn backend.application:app --reload
+uvicorn application:app --reload
 ```
 
 The server will start at `http://127.0.0.1:8000/` and the API documentation can be accessed at `http://127.0.0.1:8000/docs`.
