@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - EatSage-Backend
+name: Build and deploy Python app to Azure Web App - eatsage-backend
 
 on:
   push:
@@ -65,14 +65,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C204AF50BF2148409A66F712B1A78332 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_95E7923F758A4EE4A3EA8E169CDAED9E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5D8B21820CED49B3A596A6AE26C06AFB }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_33DF9230388940D29DDFA874C84843D8 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6401D686E410492D9CC1997E82F3C29A }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0A9AF9BEDFBA4785B34A91E0712CFFB6 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'EatSage-Backend'
+          app-name: 'eatsage-backend'
           slot-name: 'Production'
           
