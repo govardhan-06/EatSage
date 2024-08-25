@@ -57,7 +57,7 @@ async def run_customer():
     This function is used to run the customer agent.
     '''
     try:
-        subprocess.Popen(["python", "backend/src/agents/customer.py"])
+        subprocess.Popen(["python3", "backend/src/agents/customer.py"])
     except Exception as e:
         raise customException(e,sys)
 
@@ -67,7 +67,7 @@ async def run_restaurant():
     This function is used to run the restaurant agent.
     '''
     try:
-        subprocess.Popen(["python", "backend/src/agents/restaurants.py"])
+        subprocess.Popen(["python3", "backend/src/agents/restaurants.py"])
     except Exception as e:
         raise customException(e,sys)
     
@@ -77,7 +77,7 @@ async def run_valet():
     This function is used to run the valet agent.
     '''
     try:
-        subprocess.Popen(["python", "backend/src/agents/valet.py"])
+        subprocess.Popen(["python3", "backend/src/agents/valet.py"])
     except Exception as e:
         raise customException(e,sys)
 
