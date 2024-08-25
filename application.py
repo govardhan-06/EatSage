@@ -57,7 +57,7 @@ async def run_customer():
     This function is used to run the customer agent.
     '''
     try:
-        subprocess.Popen(["python", "backend/src/agents/customer.py"])
+        subprocess.Popen(["python3", "backend/src/agents/customer.py"])
     except Exception as e:
         raise customException(e,sys)
 
@@ -67,7 +67,7 @@ async def run_restaurant():
     This function is used to run the restaurant agent.
     '''
     try:
-        subprocess.Popen(["python", "backend/src/agents/restaurants.py"])
+        subprocess.Popen(["python3", "backend/src/agents/restaurants.py"])
     except Exception as e:
         raise customException(e,sys)
     
@@ -77,7 +77,7 @@ async def run_valet():
     This function is used to run the valet agent.
     '''
     try:
-        subprocess.Popen(["python", "backend/src/agents/valet.py"])
+        subprocess.Popen(["python3", "backend/src/agents/valet.py"])
     except Exception as e:
         raise customException(e,sys)
 
@@ -90,13 +90,16 @@ async def cust_prompt(prompt:str):
     '''
     try:
         await query(destination=CUST_ADDRESS, message=UserPrompt(prompt=prompt), timeout=15.0)
+        logging.info("Order generated successfully")
         # Open and read the JSON file
         with open(CUST_STORAGE, 'r') as f:
+            logging.info("Fetching data from agent storage")
             try:
                 data = json.load(f)
             except json.JSONDecodeError as e:
                 raise customException(f"Error reading JSON file: {str(e)}", sys)
-
+        
+        logging.info("Returning generated order to the user")
         return JSONResponse(content={"message": "Success","restauarant":data["restaurant"], "dishes": data['dishes']}, status_code=200)
 
     except customException as e:
