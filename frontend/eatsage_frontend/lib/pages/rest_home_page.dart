@@ -15,7 +15,7 @@ class _RestHomePageState extends State<RestHomePage> {
   Map<String, dynamic>? _orderData;
   Map<String, dynamic>? _valetData;
   Map<String, dynamic>? _paymentData;
-  final String baseUrl = 'eatsage-backend.onrender.com';
+  final String baseUrl = '10.0.2.2:8000';
   Timer? _pollingTimer;
   final _auth = AuthService();
 
@@ -34,7 +34,7 @@ class _RestHomePageState extends State<RestHomePage> {
       _isLoading = true;
     });
 
-    var ordersUrl = Uri.https(baseUrl, '/currentOrders');
+    var ordersUrl = Uri.http(baseUrl, '/currentOrders');
 
     try {
       final response = await http.get(ordersUrl);
@@ -62,7 +62,7 @@ class _RestHomePageState extends State<RestHomePage> {
       _isLoading = true;
     });
 
-    var foodPaymentUrl = Uri.https(baseUrl, '/statusFoodPayment');
+    var foodPaymentUrl = Uri.http(baseUrl, '/statusFoodPayment');
 
     try {
       final fpresponse = await http.get(foodPaymentUrl);
@@ -92,7 +92,7 @@ class _RestHomePageState extends State<RestHomePage> {
       _isLoading = true;
     });
 
-    var valetUrl = Uri.https(baseUrl, '/getValet');
+    var valetUrl = Uri.http(baseUrl, '/getValet');
 
     try {
       final response = await http.get(valetUrl);
@@ -121,7 +121,7 @@ class _RestHomePageState extends State<RestHomePage> {
       _isLoading = true;
     });
 
-    var acceptOrderUrl = Uri.https(
+    var acceptOrderUrl = Uri.http(
       baseUrl,
       '/acceptOrder',
       {
@@ -143,7 +143,7 @@ class _RestHomePageState extends State<RestHomePage> {
         print('Order accepted');
         _fetchCurrentOrders(); // Refresh the orders after acceptance
         restflag = 1;
-        var valetCallUrl = Uri.https(baseUrl, '/callValet');
+        var valetCallUrl = Uri.http(baseUrl, '/callValet');
         await http.post(valetCallUrl);
         valetcallFlag = 1;
         print("Valet Called Successfully");
@@ -172,7 +172,7 @@ class _RestHomePageState extends State<RestHomePage> {
       _isLoading = true;
     });
 
-    var declineOrderUrl = Uri.https(
+    var declineOrderUrl = Uri.http(
       baseUrl,
       '/acceptOrder',
       {

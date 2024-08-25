@@ -15,11 +15,11 @@ class ValetHomePage extends StatefulWidget {
 class _ValetHomePageState extends State<ValetHomePage> {
   Map<String, dynamic>? callDetails;
   bool isLoading = false;
-  final String baseUrl = "eatsage-backend.onrender.com";
+  final String baseUrl = "10.0.2.2:8000";
   Map<String, dynamic>? _valetPaymentData;
 
   void valetAccept() async {
-    var callConfirmUrl = Uri.https(baseUrl, '/confirmCall', {'req': 'true'});
+    var callConfirmUrl = Uri.http(baseUrl, '/confirmCall', {'req': 'true'});
     final response = await http.post(
       callConfirmUrl,
       headers: <String, String>{
@@ -71,7 +71,7 @@ class _ValetHomePageState extends State<ValetHomePage> {
       setState(() {
         isLoading = true;
       });
-      var currentCallUrl = Uri.https(baseUrl, '/currentCall');
+      var currentCallUrl = Uri.http(baseUrl, '/currentCall');
       final response = await http.get(currentCallUrl);
 
       if (response.statusCode == 200) {

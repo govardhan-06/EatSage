@@ -15,11 +15,11 @@ class _HomePageState extends State<HomePage> {
   final StreamController<List<Map<String, dynamic>>> _messagesController =
       StreamController<List<Map<String, dynamic>>>.broadcast();
   final List<Map<String, dynamic>> _messages = [];
-  final String baseUrl = 'eatsage-backend.onrender.com';
+  final String baseUrl = '10.0.2.2:8000';
   bool _isLoading = false; // To track loading state
   String _lastInputText = ''; // To store the last user input
-  int restflag =
-      1; // Assume restflag is initialized to 1 for demonstration  {  C H E C K   }
+  // int restflag =
+  //  1; // Assume restflag is initialized to 1 for demonstration  {  C H E C K   }
   int displayconfirmMsgFlag = 0;
 
   @override
@@ -28,13 +28,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> initAgents() async {
-    var customerUrl = Uri.https(baseUrl, '/customer');
+    var customerUrl = Uri.http(baseUrl, '/customer');
     await http.post(customerUrl);
     print("Customer Post successful");
-    var restaurantUrl = Uri.https(baseUrl, '/restaurant');
+    var restaurantUrl = Uri.http(baseUrl, '/restaurant');
     await http.post(restaurantUrl);
     print("Restaurant Post successful");
-    var valetUrl = Uri.https(baseUrl, '/valet');
+    var valetUrl = Uri.http(baseUrl, '/valet');
     await http.post(valetUrl);
     print("Valet Post successful");
   }
@@ -49,6 +49,7 @@ class _HomePageState extends State<HomePage> {
     text = text.toLowerCase();
 
     if (text.isNotEmpty && text != "done") {
+      await initAgents();
       _messages.add({'text': text, 'isUser': true}); // Add user message
       _textEditingController.clear();
       _messagesController.add(List.from(_messages)); // Update stream
@@ -57,11 +58,11 @@ class _HomePageState extends State<HomePage> {
         _isLoading = true; // Show loading indicator
       });
 
-      await initAgents();
+      //await initAgents();
 
       _lastInputText = text; // Store the last user input
 
-      var promptUrl = Uri.https(baseUrl, '/prompt', {'prompt': text});
+      var promptUrl = Uri.http(baseUrl, '/prompt', {'prompt': text});
       try {
         final response = await http.post(
           promptUrl,
@@ -111,7 +112,7 @@ class _HomePageState extends State<HomePage> {
       }
     } else {
       //call the final paripadiess
-      var confDelUrl = Uri.https(baseUrl, '/confirmDelivery', {'req': 'true'});
+      var confDelUrl = Uri.http(baseUrl, '/confirmDelivery', {'req': 'true'});
       final resp = await http.post(confDelUrl);
       confdelflag = 1;
       if (resp.statusCode == 200) {
@@ -130,7 +131,7 @@ class _HomePageState extends State<HomePage> {
         _messagesController.add(List.from(_messages));
       }
       if (confdelflag == 1) {
-        var transtatusUrl = Uri.https(baseUrl, '/transactionStatus');
+        var transtatusUrl = Uri.http(baseUrl, '/transactionStatus');
         final response = await http.get(transtatusUrl);
         transflag = 1;
       }
@@ -143,7 +144,7 @@ class _HomePageState extends State<HomePage> {
         _isLoading = true; // Show loading indicator
       });
 
-      var promptUrl = Uri.https(baseUrl, '/prompt', {'prompt': _lastInputText});
+      var promptUrl = Uri.http(baseUrl, '/prompt', {'prompt': _lastInputText});
       try {
         final response = await http.post(
           promptUrl,
@@ -199,7 +200,7 @@ class _HomePageState extends State<HomePage> {
       _isLoading = true; // Show loading indicator
     });
 
-    var confirmOrderUrl = Uri.https(baseUrl, '/confirmOrder', {
+    var confirmOrderUrl = Uri.http(baseUrl, '/confirmOrder', {
       'req': 'true',
     });
 
@@ -219,7 +220,8 @@ class _HomePageState extends State<HomePage> {
 
         if (restflag == 1) {
           // Fetch the confirmation message from the restaurant agent
-          var resConfirmUrl = Uri.https(baseUrl, '/resConfirm');
+          print("Restaurant Flag updated");
+          var resConfirmUrl = Uri.http(baseUrl, '/resConfirm');
 
           try {
             final resConfirmResponse = await http.get(resConfirmUrl);
@@ -239,7 +241,7 @@ class _HomePageState extends State<HomePage> {
               });
               _messagesController.add(List.from(_messages)); // Update stream
               if (valetMsgFlag == 1) {
-                var valetmsgUrl = Uri.https(baseUrl, '/valetMessage');
+                var valetmsgUrl = Uri.http(baseUrl, '/valetMessage');
                 final valetmsgResponse = await http.get(valetmsgUrl);
 
                 if (valetmsgResponse.statusCode == 200) {
